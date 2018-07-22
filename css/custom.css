@@ -1,0 +1,32 @@
+body { 
+  padding-top: 50px; 
+}
+.navbar-nav {
+    display:table;
+    width:100%;
+    margin: 0;
+}
+.navbar-nav > li {
+    float:none;
+    display:table-cell;
+    text-align:center;
+}
+.btn-circle {
+  width: 70px;
+  height: 70px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.42;
+  border-radius: 35px;
+  position:absolute;
+  bottom:100px;
+  right:50px;
+}
+.btn-add {
+  font-size: 35px;
+}
+.form-control-option {
+  display: inline;
+  width: 90%;
+}

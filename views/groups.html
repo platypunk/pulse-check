@@ -8,29 +8,8 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-<script type="text/javascript">
-$('.nav.navbar-nav > li').on('click', function(e) {
-    $('.nav.navbar-nav > li').removeClass('active');
-    $(this).addClass('active');
-});
-</script>
-<style>
-body { 
-  padding-top: 50px; 
-}
-.btn-circle {
-  width: 70px;
-  height: 70px;
-  text-align: center;
-  padding: 6px 0;
-  font-size: 12px;
-  line-height: 1.42;
-  border-radius: 35px;
-  position:absolute;
-  bottom:100px;
-  right:50px;
-}
-</style>
+<link rel="stylesheet" href="/css/custom.css">
+<script src="/js/printList.js"></script>
 </head>
 <body>
 <div>
@@ -57,8 +36,8 @@ body {
   <nav class="navbar navbar-default navbar-fixed-bottom">
     <div class="container-fluid">
       <ul class="nav navbar-nav ">
-        <li class="active"><a href="/">Polls</a></li>
-        <li><a href="/groups">Groups</a></li>
+        <li><a href="/">Polls</a></li>
+        <li class="active"><a href="/groups">Groups</a></li>
         <li><a href="/users">Users</a></li>
       </ul>
     </div>

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Polls</title>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.3/angular-route.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+  <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+  <script src="js/bootstrap-datetimepicker.min.js"></script>
+  <script src="js/datetimepickerDirective.js"></script>
+
+  <link rel="stylesheet" href="/css/custom.css">
+  <script src="/js/custom.js"></script>
+
+</head>
+<body>
+  <div>
+    <div>
+      <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+          <form class="navbar-form navbar-left" action="/action_page.php">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+          </form>
+        </div>
+      </nav>
+    </div>
+
+    <div class="list-group">
+      <% questions.forEach(function(question) { %>
+      <a href="#" class="list-group-item"><%= question.question %></a>
+      <% }); %>
+    </div>
+
+    <div>
+      <a href="#" class="btn btn-info btn-circle btn-add" data-toggle="modal" data-target="#myModal"><i class="fa fa-user">+</i></a>
+    </div>
+    <div id="myModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form id="questionForm" action="/questions" method="POST">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Ask</h4>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label>Question</label>
+                <input type="text" class="form-control" name="question" placeholder="Enter question">
+              </div>
+              <div class="form-group">
+                <label>Options</label>
+                <div class="controls" id="options"> 
+                  <form class="input-append">
+                    <div id="option"><input autocomplete="off" class="form-control form-control-option" id="option1" name="option1" type="text" placeholder="Enter option" data-items="8"/><button id="b1" class="btn add-more" type="button">+</button></div>
+                  </form>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Optional comment box&nbsp;&nbsp;&nbsp;</label>
+                <input type="checkbox" name="comment"> 
+              </div>
+              <div class="form-group">
+                <label>Schedule</label>
+                <div class="form-group">
+                  <div class='input-group date' id='datetimepicker1'>
+                    <input type='text' class="form-control" name="schedule"/>
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <input id="questionSubmit" type="submit" value="Save" class="btn btn-default" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <nav class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container-fluid">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="/">Polls</a></li>
+            <li><a href="/groups">Groups</a></li>
+            <li><a href="/users">Users</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <br/>
+  </div>
+</body>
+</html>
