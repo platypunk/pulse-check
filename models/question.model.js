@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 
 const QuestionSchema = mongoose.Schema({
     question: String,
-    options: [{ option: String }],
+    options: [String],
     comment: String,
-    schedule: [{ time: Date}],
+    schedule: [Date],
     deleted: Boolean
 }, {
     timestamps: true

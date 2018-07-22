@@ -9,12 +9,11 @@ exports.create = (req, res) => {
         });
     }
 
-    const question = new Question({
-        question: req.body.question,
-        options: [req.body.option1, req.body.option2],
-        comment: req.body.comment,
-        schedule: req.body.schedule
-    });
+    const question = new Question();
+    question.question = req.body.question;
+    question.options.push(req.body.option1);
+    question.options.push(req.body.option2);
+    //TODO
     
     question.save()
     .then(data => {
