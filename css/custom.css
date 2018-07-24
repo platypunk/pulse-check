@@ -30,3 +30,7 @@ body {
   display: inline;
   width: 90%;
 }
+#contextMenu {
+  position: absolute;
+  display:none;
+}

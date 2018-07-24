@@ -43,9 +43,24 @@ $(function(){
             if(data.success) {
                 window.location.reload(true);
             } else {
-                $('form').append('<div class="alert alert-danger">' + data.message + '</div>');
+                $form.append('<div class="alert alert-danger">' + data.message + '</div>');
             }
         })
   });
 });
 
+// context menu
+$(function() {
+  var $contextMenu = $("#contextMenu");
+  $("body").on("contextmenu", "table tr", function(e) {
+    $contextMenu.css({
+      display: "block",
+      left: e.pageX,
+      top: e.pageY
+    });
+    return false;
+  });
+  $contextMenu.on("click", "a", function() {
+     $contextMenu.hide();
+  });
+});
