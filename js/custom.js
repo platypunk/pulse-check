@@ -48,19 +48,3 @@ $(function(){
         })
   });
 });
-
-// context menu
-$(function() {
-  var $contextMenu = $("#contextMenu");
-  $("body").on("contextmenu", "table tr", function(e) {
-    $contextMenu.css({
-      display: "block",
-      left: e.pageX,
-      top: e.pageY
-    });
-    return false;
-  });
-  $contextMenu.on("click", "a", function() {
-     $contextMenu.hide();
-  });
-});
