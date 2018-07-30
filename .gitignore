@@ -65,3 +65,6 @@ typings/
 
 # git
 package-lock.json
+
+# idea
+.idea/
