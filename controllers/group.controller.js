@@ -48,9 +48,7 @@ exports.findAll = (req, res) => {
 
 	Group.find()
     .then(groups => {
-        res.render('index', {
-          groups: groups
-      });
+        res.send(groups);
     }).catch(err => {
         res.status(500).send({
             message: err.message || 'Some error occurred while retrieving data.'

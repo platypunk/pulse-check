@@ -45,9 +45,7 @@ exports.findAll = (req, res) => {
 
 	Question.find()
     .then(questions => {
-        res.render('index', {
-          questions: questions
-      });
+        res.send(questions);
     }).catch(err => {
         res.status(500).send({
             message: err.message || 'Some error occurred while retrieving data.'

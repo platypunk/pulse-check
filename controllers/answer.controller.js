@@ -32,9 +32,7 @@ exports.findAll = (req, res) => {
 
 	Answer.find()
     .then(answers => {
-        res.render('index', {
-          answers: answers
-      });
+        res.send(answers);
     }).catch(err => {
         res.status(500).send({
             message: err.message || 'Some error occurred while retrieving data.'
