@@ -3,6 +3,7 @@ const Question = require('../models/question.model.js');
 exports.create = (req, res) => {
     console.log('Saving question...');
     
+    // TODO add userId, groupId, location
     if(!req.body.question || !req.body.option1 || !req.body.option2 || 
         !req.body.schedule) {
         res.send({
@@ -18,18 +19,19 @@ exports.create = (req, res) => {
         }
 
         const question = new Question({
+            userId: req.body.userId,
+            groupId: req.body.groupId,
             question: req.body.question,
-            comment: req.body.comment,
             options: options,
-            schedule: new Date(req.body.schedule + ':00')
+            comment: req.body.comment,
+            schedule: new Date(req.body.schedule + ':00'),
+            location: req.body.location
         });
         
         question.save()
         .then(data => {
-            console.log('x');
             res.send({success: true});
         }).catch(err => {
-            console.log('y');
             res.send({
                 message: err.message || 'Some error occurred while creating data.'
             });
@@ -79,6 +81,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     console.log('Updating question...');
 
+    // TODO add groupId, location
     if(!req.body.question || !req.body.option1 || !req.body.option2 || 
         !req.body.schedule) {
         res.send({
@@ -94,10 +97,12 @@ exports.update = (req, res) => {
         }
 
         Question.findByIdAndUpdate(req.params.questionId, {
+            groupId: req.body.groupId,
             question: req.body.question,
-            comment: req.body.comment,
             options: options,
-            schedule: new Date(req.body.schedule + ':00')
+            comment: req.body.comment,
+            schedule: new Date(req.body.schedule + ':00'),
+            location: req.body.location
         }, {new: true})
         .then(question => {
             if(!question) {

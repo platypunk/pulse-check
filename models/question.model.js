@@ -1,12 +1,15 @@
 const mongoose = require('mongoose');
 
 const QuestionSchema = mongoose.Schema({
+    userId: String,
+    groupId: String,
     question: String,
     options: [String],
     comment: String,
     schedule: Date,
-    createdBy: String,
-    deleted: Boolean
+    location: String,
+    deleted: Boolean,
+    notified: Boolean
 }, {
     timestamps: true
 });
