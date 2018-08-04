@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 
 const dbConfig = require('./config/database.config.js');
 const jwtConfig = require('./config/jwt.config.js');
@@ -12,6 +13,7 @@ const router = express.Router();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.set('superSecret', jwtConfig.secret);
+app.use(cors());
 
 // Configuring the database
 mongoose.Promise = global.Promise;
