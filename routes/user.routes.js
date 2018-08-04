@@ -11,5 +11,5 @@ module.exports = (app) => {
 
     app.delete('/users/:userId', users.delete);
 
-    app.get('/users?name=[userName]', users.findUser);
+    app.get('/user?name=[userName]', users.findUser);
 }
