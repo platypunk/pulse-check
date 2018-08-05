@@ -5,14 +5,14 @@ const User = require('../models/user.model.js');
 exports.create = (req, res) => {
     console.log('Saving user...');
     
-    if(!req.body.userName || !req.body.password) {
+    if(!req.body.username || !req.body.password) {
         res.status(400).send({
             success: false,
             message: 'Username and password is required'
         });
     } else {
         const user = new User({
-            userName: req.body.userName,
+            username: req.body.username,
             password: req.body.password,
             firstName: req.body.firstName,
             lastName: req.body.lastName,
@@ -40,7 +40,7 @@ exports.findAll = (req, res) => {
 
     User.find({}, {
         _id: 1,
-        userName: 1,
+        username: 1,
         firstName: 1,
         lastName: 1,
         isAdmin: 1,
@@ -61,7 +61,7 @@ exports.findOne = (req, res) => {
 
     User.findById(req.params.userId,{
         _id: 1,
-        userName: 1,
+        username: 1,
         firstName: 1,
         lastName: 1,
         isAdmin: 1,
@@ -163,10 +163,10 @@ exports.findUser = (req, res) => {
     console.log('Getting user...');
 
     User.findOne({
-        userName: req.query.userName
+        username: req.query.username
     }, {
         _id: 1,
-        userName: 1,
+        username: 1,
         firstName: 1,
         lastName: 1,
         isAdmin: 1,
@@ -195,7 +195,7 @@ exports.findUser = (req, res) => {
 exports.authenticate = (req, res) => {
     console.log('Authenticating user...');
 
-    if(!req.body.userName || !req.body.password) {
+    if(!req.body.username || !req.body.password) {
         console.log('Username and password is required.');
         res.status(404).send({ 
             success: false, 
@@ -203,7 +203,7 @@ exports.authenticate = (req, res) => {
         });
     } else {
         User.findOne({
-            userName: req.body.userName
+            username: req.body.username
         })
         .then(user => {
             if(!user) {
@@ -222,7 +222,7 @@ exports.authenticate = (req, res) => {
                 // remove password
                 const payload = {
                     _id: user._id,
-                    userName: user.userName,
+                    username: user.username,
                     firstName: user.firstName,
                     lastName: user.lastName,
                     isAdmin: user.isAdmin,
