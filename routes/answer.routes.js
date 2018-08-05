@@ -11,6 +11,6 @@ module.exports = (app) => {
 
     app.delete('/answers/:answerId', answer.delete);
 
-    app.get('/answers?question=[questionId]&user=[userId]', answer.findAnswer);
+    app.get('/answer', answer.findAnswer);
     
 }

@@ -128,7 +128,7 @@ exports.delete = (req, res) => {
     })
     .then(question => {
         if(!question) {
-            return res.status(404).send({
+            res.status(404).send({
                 message: 'Data not found with id ' + req.params.questionId
             });
         }
@@ -137,7 +137,7 @@ exports.delete = (req, res) => {
         });    
     }).catch(err => {
         if(err.kind === 'ObjectId' || err.name === 'NotFound') {
-            return res.status(404).send({
+            res.status(404).send({
                 message: 'Data not found with id ' + req.params.questionId
             });                
         }
