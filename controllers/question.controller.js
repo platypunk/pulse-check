@@ -16,7 +16,7 @@ exports.create = (req, res) => {
             question: req.body.question,
             options: req.body.options,
             comment: req.body.comment,
-            schedule: new Date(req.body.schedule + ':00'),
+            schedule: new Date(req.body.schedule),
             location: req.body.location
         });
         
@@ -95,7 +95,7 @@ exports.update = (req, res) => {
             if (req.body.comment) question.comment = req.body.comment;
             if (req.body.schedule) question.schedule = req.body.schedule;
             if (req.body.location) question.location = req.body.location;
-            if (req.body.schedule) question.schedule = new Date(req.body.schedule + ':00');
+            if (req.body.schedule) question.schedule = new Date(req.body.schedule);
             question.save(function(err) {
                 if(!err) {
                     res.status(200).send({
