@@ -148,16 +148,16 @@ exports.findAnswer = (req, res) => {
     } else {
         if (req.query.userId) {
             console.log('Getting answers by user...');
-            answers = Answer.find({
+            Answer.find({
                 userId: req.query.userId
             })
-            .then(question => {
-                if(!question) {
+            .then(answers => {
+                if(!answers) {
                     res.status(404).send({
                         message: 'Data not found with id ' + req.params.questionId
                     });            
                 }
-                res.send(question);
+                res.send(answers);
             }).catch(err => {
                 if(err.kind === 'ObjectId') {
                     res.status(404).send({
@@ -171,28 +171,58 @@ exports.findAnswer = (req, res) => {
             });
             console.log(answers);
         } else if (req.query.questionId) {
-            console.log('Getting answers by question...');
-            answers = Answer.find({
-                questionId: req.query.questionId
-            })
-            .then(question => {
-                if(!question) {
-                    res.status(404).send({
-                        message: 'Data not found with id ' + req.params.questionId
-                    });            
-                }
-                res.send(question);
-            }).catch(err => {
-                if(err.kind === 'ObjectId') {
-                    res.status(404).send({
-                        message: 'Data not found'
+            if (req.query.count === 'true') {
+                console.log('Getting answers count by question...');
+                const aggregatorOpts = [{
+                        $group: {
+                            _id: "$answer",
+                            count: { $sum: 1 }
+                        }
+                    }
+                ]
+                Answer.aggregate(aggregatorOpts).exec()
+                .then(answers => {
+                    if(!answers) {
+                        res.status(404).send({
+                            message: 'Data not found with id ' + req.params.questionId
+                        });            
+                    }
+                    res.send(answers);
+                }).catch(err => {
+                    if(err.kind === 'ObjectId') {
+                        res.status(404).send({
+                            message: 'Data not found'
+                        });
+                    }
+                    console.log(err.message || 'Technical error.');
+                    res.status(500).send({
+                        message: 'Technical error.'
                     });
-                }
-                console.log(err.message || 'Technical error.');
-                res.status(500).send({
-                    message: 'Technical error.'
                 });
-            });
+            } else {
+                console.log('Getting answers by question...');
+                Answer.find({
+                    questionId: req.query.questionId
+                })
+                .then(answers => {
+                    if(!answers) {
+                        res.status(404).send({
+                            message: 'Data not found with id ' + req.params.questionId
+                        });            
+                    }
+                    res.send(answers);
+                }).catch(err => {
+                    if(err.kind === 'ObjectId') {
+                        res.status(404).send({
+                            message: 'Data not found'
+                        });
+                    }
+                    console.log(err.message || 'Technical error.');
+                    res.status(500).send({
+                        message: 'Technical error.'
+                    });
+                });
+            }
         }
     }
 };

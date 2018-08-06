@@ -12,5 +12,4 @@ module.exports = (app) => {
     app.delete('/answers/:answerId', answer.delete);
 
     app.get('/answer', answer.findAnswer);
-    
 }
