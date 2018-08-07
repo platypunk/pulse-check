@@ -35,6 +35,8 @@ router.use(function (req,res,next) {
 const users = require('./controllers/user.controller.js');
 router.post('/authenticate', users.authenticate);
 
+require('./routes/fb.routes.js')(app);
+
 if (jwtConfig.enabled) {
   router.use(function (req, res, next) {
     var token = req.body.token || req.query.token || req.headers['x-access-token'];

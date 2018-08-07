@@ -1,5 +1,5 @@
 module.exports = {
-	enabled: false,
+	enabled: true,
     secret: 'cowabunga',
     expiry: 1440 // 24 hours
 }
