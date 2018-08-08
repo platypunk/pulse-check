@@ -10,4 +10,7 @@ module.exports = (app) => {
     app.post('/fb/receive', fb.receiveMessage);
     
     app.get('/fb/receive', fb.verifyMessage);
+
+    app.get('/fb/privacy', fb.getPrivacyPolicy);
+
 }

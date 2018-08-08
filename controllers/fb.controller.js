@@ -1,25 +1,5 @@
 const fbConfig = require('../config/fb.config.js');
 
-exports.authenticate = (req, res) => {
-    console.log('Authenticating with FB...');
-    
-};
-
-exports.getGroups = (req, res) => {
-    console.log('Getting groups...');
-
-};
-
-exports.getUsers = (req, res) => {
-    console.log('Getting users...');
-    
-};
-
-exports.sendMessage = (req, res) => {
-    console.log('Sending message...');
-    
-};
-
 exports.receiveMessage = (req, res) => {
     console.log('Receiving message...');
     let body = req.body;
@@ -53,4 +33,30 @@ exports.verifyMessage = (req, res) => {
     } else {
         res.sendStatus(400);
     }
+};
+
+exports.getPrivacyPolicy = (req, res) => {
+    console.log('Returning privacy policy...');
+    
+    res.status(200).send("Privacy Policy");
+};
+
+exports.sendMessage = (req, res) => {
+    console.log('Sending message...');
+    
+};
+
+exports.authenticate = (req, res) => {
+    console.log('Authenticating with FB...');
+    
+};
+
+exports.getGroups = (req, res) => {
+    console.log('Getting groups...');
+
+};
+
+exports.getUsers = (req, res) => {
+    console.log('Getting users...');
+    
 };

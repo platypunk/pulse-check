@@ -1,6 +1,6 @@
 # pulse-check
 
 To run 
-1. Start mongod (check config/database.config.js)
+1. Start mongod (check configs/database.config.js)
 2. npm install
-3. node Server.js
+3. node server.js
