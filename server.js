@@ -62,12 +62,13 @@ if (jwtConfig.enabled) {
   });
 }
 
+app.use('/',router);
+
 require('./routes/question.routes.js')(app);
 require('./routes/answer.routes.js')(app);
 require('./routes/user.routes.js')(app);
 require('./routes/group.routes.js')(app);
 
-app.use('/',router);
 
 app.listen(3000,function(){
   console.log('Live at Port 3000');
