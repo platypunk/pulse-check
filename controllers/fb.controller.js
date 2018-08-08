@@ -38,7 +38,7 @@ exports.verifyMessage = (req, res) => {
 exports.getPrivacyPolicy = (req, res) => {
     console.log('Returning privacy policy...');
     
-    res.status(200).send("Privacy Policy");
+    res.status(200).send("");
 };
 
 exports.sendMessage = (req, res) => {
