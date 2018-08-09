@@ -2,8 +2,9 @@ const fbConfig = require('../config/fb.config.js');
 
 exports.receiveMessage = (req, res) => {
     console.log('Receiving message...');
-    let body = req.body;
+    console.log(req.body);
 
+    let body = req.body;
     if (body.object === 'page') {
         body.entry.forEach(function(entry) {
             let webhook_event = entry.messaging[0];
