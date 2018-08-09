@@ -27,16 +27,13 @@ mongoose.connect(dbConfig.url, { useNewUrlParser: true })
 });
 
 // Routes
-router.use(function (req,res,next) {
+app.use(function (req,res,next) {
   console.log(`${req.method} request for '${req.url}' - ${JSON.stringify(req.body)}`);
   next();
 });
 
 const users = require('./controllers/user.controller.js');
 router.post('/authenticate', users.authenticate);
-
-// FB
-require('./routes/fb.routes.js')(app);
 
 // JWT
 if (jwtConfig.enabled) {
@@ -61,6 +58,8 @@ if (jwtConfig.enabled) {
     }
   });
 }
+
+require('./routes/fb.routes.js')(app);
 
 app.use('/',router);
 
