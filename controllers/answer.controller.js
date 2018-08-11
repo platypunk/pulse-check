@@ -63,6 +63,7 @@ exports.findOne = (req, res) => {
                 message: 'Data not found with id ' + req.params.answerId
             });                
         }
+        console.log(err.message || 'Technical error.');
         res.status(500).send({
             message: 'Error retrieving data with id ' + req.params.answerId
         });

@@ -69,9 +69,9 @@ exports.sendMessage = (req, res) => {
         request.post(
             'https://' + fbConfig.host + fbConfig.sendMessageURL,
             { json: { jsonReq } },
-            function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    console.log(err.message || 'Technical error.');
+            function (err, response, body) {
+                if (!err && response.statusCode == 200) {
+                    console.log(err? err.message : 'Technical error.');
                     res.status(500).send({
                         success: false,
                         message: 'Technical error.'
@@ -105,10 +105,10 @@ exports.getGroups = (req, res) => {
 function getFbGroups(groups, url, res) {
     request.get(
         url,
-        function (error, response, body) {
-            if (error || response.statusCode != 200) {
-                console.log(error.message || 'Technical error.');
-                res.status(500).send({
+        function (err, response, body) {
+            if (err || response.statusCode != 200) {
+                console.log(err ? err.message : 'Technical error.');
+                return res.status(500).send({
                     success: false,
                     message: 'Technical error.'
                 });
@@ -131,7 +131,7 @@ function getFbGroups(groups, url, res) {
             if (json.paging && json.paging.next) {
                 getFbGroups(groups, json.paging.next, res);
             } else {
-                res.status(200).send(groups);
+                return res.status(200).send(groups);
             }
         }
     );

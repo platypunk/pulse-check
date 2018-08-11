@@ -66,7 +66,6 @@ app.use('/',router);
 require('./routes/question.routes.js')(app);
 require('./routes/answer.routes.js')(app);
 require('./routes/user.routes.js')(app);
-require('./routes/group.routes.js')(app);
 
 
 app.listen(3000,function(){
