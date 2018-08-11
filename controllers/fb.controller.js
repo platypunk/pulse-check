@@ -88,11 +88,6 @@ exports.sendMessage = (req, res) => {
     }
 };
 
-exports.authenticate = (req, res) => {
-    console.log('Authenticating with FB...');
-    
-};
-
 exports.getGroups = (req, res) => {
     console.log('Getting groups...');
 
@@ -137,7 +132,39 @@ function getFbGroups(groups, url, res) {
     );
 }
 
-exports.getUsers = (req, res) => {
+exports.getMembers = (req, res) => {
     console.log('Getting users...');
-    
+
+    var users = [];
+    request.get(
+        fbConfig.url + util.format(fbConfig.getUsers, 
+            req.params.groupId, 
+            fbConfig.appPageToken), 
+        function (err, response, body) {
+            if (err || response.statusCode != 200) {
+                console.log(err ? err.message : 'Technical error.');
+                res.status(500).send({
+                    success: false,
+                    message: 'Technical error.'
+                });
+            }
+            else {
+                // TODO
+                // var json = JSON.parse(body);
+                // if (json.data) {
+                //     json.data.forEach(function(data) {
+                //         // includes secret groups
+                //         if (!data.archived && !data.is_workplace_default) {
+                //             let group = {
+                //                 id: data.id,
+                //                 name: data.name
+                //             };
+                //             groups.push(group);
+                //         }
+                //     });
+                // }
+                return res.status(200).send(body);
+            }
+        }
+    );
 };

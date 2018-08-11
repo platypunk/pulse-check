@@ -59,10 +59,12 @@ if (jwtConfig.enabled) {
   });
 }
 
-require('./routes/fb.routes.js')(app);
+// exclude webhook from jwt
+require('./routes/fb.ext.routes.js')(app);
 
 app.use('/',router);
 
+require('./routes/fb.routes.js')(app);
 require('./routes/question.routes.js')(app);
 require('./routes/answer.routes.js')(app);
 require('./routes/user.routes.js')(app);
