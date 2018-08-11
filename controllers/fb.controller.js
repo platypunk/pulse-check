@@ -1,12 +1,6 @@
 const fbConfig = require('../config/fb.config.js');
 const request = require('request');
-
-// required by fb
-exports.getPrivacyPolicy = (req, res) => {
-    console.log('Returning privacy policy...');
-    
-    res.status(200).send("");
-};
+const util = require('util');
 
 exports.verifyMessage = (req, res) => {
     console.log('Verifying message...');
@@ -83,6 +77,9 @@ exports.sendMessage = (req, res) => {
                         message: 'Technical error.'
                     });
                 }
+                else {
+                    console.log(JSON.stringify(body));
+                }
             }
         );
         res.status(200).send({
@@ -99,7 +96,46 @@ exports.authenticate = (req, res) => {
 exports.getGroups = (req, res) => {
     console.log('Getting groups...');
 
+    var groups = [];
+    getFbGroups(groups, 
+        fbConfig.url + util.format(fbConfig.getGroups, fbConfig.appPageToken), 
+        res);
 };
+
+function getFbGroups(groups, url, res) {
+    request.get(
+        url,
+        function (error, response, body) {
+            if (error || response.statusCode != 200) {
+                console.log(error.message || 'Technical error.');
+                res.status(500).send({
+                    success: false,
+                    message: 'Technical error.'
+                });
+            }
+            else {
+                var json = JSON.parse(body);
+                if (json.data) {
+                    json.data.forEach(function(data) {
+                        // includes secret groups
+                        if (!data.archived && !data.is_workplace_default) {
+                            let group = {
+                                id: data.id,
+                                name: data.name
+                            };
+                            groups.push(group);
+                        }
+                    });
+                }
+            }
+            if (json.paging && json.paging.next) {
+                getFbGroups(groups, json.paging.next, res);
+            } else {
+                res.status(200).send(groups);
+            }
+        }
+    );
+}
 
 exports.getUsers = (req, res) => {
     console.log('Getting users...');

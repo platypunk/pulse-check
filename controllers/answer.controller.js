@@ -173,6 +173,7 @@ exports.findAnswer = (req, res) => {
         } else if (req.query.questionId) {
             if (req.query.count === 'true') {
                 console.log('Getting answers count by question...');
+                // TODO add questionId
                 const aggregatorOpts = [{
                         $group: {
                             _id: "$answer",
