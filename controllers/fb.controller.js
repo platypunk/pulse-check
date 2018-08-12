@@ -3,7 +3,7 @@ const util = require('util');
 const fbConfig = require('../config/fb.config.js');
 
 exports.verifyMessage = (req, res) => {
-    console.log('Verifying message...');
+    console.log('Verifying message...\n' + JSON.stringify(req.body));
     let VERIFY_TOKEN = fbConfig.verifyToken;
     
     let mode = req.query['hub.mode'];
@@ -23,7 +23,7 @@ exports.verifyMessage = (req, res) => {
 };
 
 exports.receiveMessage = (req, res) => {
-    console.log('Receiving message...');
+    console.log('Receiving message...\n' + JSON.stringify(req.body));
 
     let body = req.body;
     if (body.object === 'page') {
@@ -31,11 +31,18 @@ exports.receiveMessage = (req, res) => {
             if (entry.messaging) {
                 let webhook_event = entry.messaging[0];
                 console.log(webhook_event);
+                // TODO find thread
+                // save answer
+                // hello
+                // info / help
+                // view questions
+
             }
         });
     }
     res.status(200).send('EVENT_RECEIVED');
 };
+
 exports.getGroups = (req, res) => {
     console.log('Getting groups...');
 
