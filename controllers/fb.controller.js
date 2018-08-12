@@ -1,6 +1,6 @@
-const fbConfig = require('../config/fb.config.js');
 const request = require('request');
 const util = require('util');
+const fbConfig = require('../config/fb.config.js');
 
 exports.verifyMessage = (req, res) => {
     console.log('Verifying message...');
@@ -36,58 +36,6 @@ exports.receiveMessage = (req, res) => {
     }
     res.status(200).send('EVENT_RECEIVED');
 };
-
-exports.sendMessage = (req, res) => {
-    console.log('Sending message...');
-
-    if(!req.body.userId) {
-        res.status(400).send({
-            success: false,
-            message: 'UserId, question and options are required'
-        });
-    } else {
-        jsonReq = 
-        {
-          "recipient":{
-            "id": req.body.userId
-        },
-        "message":{
-            "text": "How are you?",
-            "quick_replies":[
-            {
-                "content_type":"text",
-                "title":"Good",
-                "payload":"GOOD"
-            },
-            {
-                "content_type":"text",
-                "title":"Bad",
-                "payload":"BAD"
-            }]
-            }
-        };
-        request.post(
-            'https://' + fbConfig.host + fbConfig.sendMessageURL,
-            { json: { jsonReq } },
-            function (err, response, body) {
-                if (!err && response.statusCode == 200) {
-                    console.log(err? err.message : 'Technical error.');
-                    res.status(500).send({
-                        success: false,
-                        message: 'Technical error.'
-                    });
-                }
-                else {
-                    console.log(JSON.stringify(body));
-                }
-            }
-        );
-        res.status(200).send({
-            success: true
-        });
-    }
-};
-
 exports.getGroups = (req, res) => {
     console.log('Getting groups...');
 
@@ -132,23 +80,76 @@ function getFbGroups(groups, url, res) {
     );
 }
 
-exports.getMembers = (req, res) => {
-    console.log('Getting users...');
+// TODO remove
+// exports.sendMessage = (req, res) => {
+//     console.log('Sending message...');
 
-    var users = [];
-    request.get(
-        fbConfig.url + util.format(fbConfig.getUsers, 
-            req.params.groupId, 
-            fbConfig.appPageToken), 
-        function (err, response, body) {
-            if (err || response.statusCode != 200) {
-                console.log(err ? err.message : 'Technical error.');
-                res.status(500).send({
-                    success: false,
-                    message: 'Technical error.'
-                });
-            }
-            else {
+//     if(!req.body.memberId) {
+//         res.status(400).send({
+//             success: false,
+//             message: 'UserId, question and options are required'
+//         });
+//     } else {
+//         jsonReq = 
+//         {
+//           "recipient":{
+//             "id": req.body.memberId
+//         },
+//         "message":{
+//             "text": "How are you?",
+//             "quick_replies":[
+//             {
+//                 "content_type":"text",
+//                 "title":"Good",
+//                 "payload":"GOOD"
+//             },
+//             {
+//                 "content_type":"text",
+//                 "title":"Bad",
+//                 "payload":"BAD"
+//             }]
+//             }
+//         };
+//         request.post(
+//             fbConfig.url + util.format(fbConfig.sendMessage, fbConfig.appPageToken),
+//             {json: jsonReq},
+//             function (err, response, body) {
+//                 if (!err && response.statusCode == 200) {
+//                     console.log(err? err.message : 'Technical error.');
+//                     res.status(500).send({
+//                         success: false,
+//                         message: 'Technical error.'
+//                     });
+//                 }
+//                 else {
+//                     console.log(JSON.stringify(body));
+//                 }
+//             }
+//         );
+//         res.status(200).send({
+//             success: true
+//         });
+//     }
+// };
+
+// TODO remove
+// exports.getMembers = (req, res) => {
+//     console.log('Getting members...');
+
+//     var members = [];
+//     request.get(
+//         fbConfig.url + util.format(fbConfig.getUsers, 
+//             req.params.groupId, 
+//             fbConfig.appPageToken), 
+//         function (err, response, body) {
+//             if (err || response.statusCode != 200) {
+//                 console.log(err ? err.message : 'Technical error.');
+//                 res.status(500).send({
+//                     success: false,
+//                     message: 'Technical error.'
+//                 });
+//             }
+//             else {
                 // TODO
                 // var json = JSON.parse(body);
                 // if (json.data) {
@@ -163,8 +164,84 @@ exports.getMembers = (req, res) => {
                 //         }
                 //     });
                 // }
-                return res.status(200).send(body);
+//                 return res.status(200).send(body);
+//             }
+//         }
+//     );
+// };
+
+exports.getMembers = (groupId, callback) => {
+    console.log('Getting members...');
+
+    var members = [];
+    members.push({
+        name: 'Aiza Soriano',
+        id: 100027437147895
+    });
+    // request.get(
+    //     fbConfig.url + util.format(fbConfig.getUsers, 
+    //         groupId, 
+    //         fbConfig.appPageToken), 
+    //     function (err, response, body) {
+    //         if (err || response.statusCode != 200) {
+    //             console.log(err ? err.message : 'Technical error.');
+    //             return null;
+    //         }
+    //         else {
+                // TODO
+                // var json = JSON.parse(body);
+                // if (json.data) {
+                //     json.data.forEach(function(data) {
+                //         let member = {
+                //             id: data.id,
+                //             name: data.name
+                //         };
+                //         members.push(member);
+                //     });
+                // }
+    //             return body;
+    //         }
+    //     }
+    // );
+
+    return callback(members);
+};
+
+exports.sendMessage = (memberId, question, options, callback) => {
+    console.log('Sending message...');
+
+    let quickReplies = [];
+    options.forEach(function(option) {
+        jsonOpt = {
+            content_type: 'text',
+            title: option,
+            payload: option
+        };
+        quickReplies.push(jsonOpt);
+    });
+    jsonReq = 
+    {
+        recipient: {
+            id: memberId
+        },
+        message: {
+            text: question,
+            quick_replies: quickReplies
+        }
+    };
+
+    request.post(
+        fbConfig.url + util.format(fbConfig.sendMessage, fbConfig.appPageToken),
+        {json: jsonReq},
+        function (err, response, body) {
+            if (err || response.statusCode != 200) {
+                console.log(err? err.message : 'Technical error.');
+                return callback([]);
+            }
+            else {
+                return callback(body);
             }
         }
     );
 };
+

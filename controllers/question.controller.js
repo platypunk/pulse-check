@@ -123,6 +123,8 @@ exports.update = (req, res) => {
 };
 
 exports.delete = (req, res) => {
+    console.log("Deleting question");
+    
 	Question.findByIdAndUpdate(req.params.questionId, {
             deleted: true
     })
@@ -145,5 +147,29 @@ exports.delete = (req, res) => {
         res.status(500).send({
             message: 'Technical error.'
         });
+    });
+};
+
+exports.getScheduled = (callback) => {
+    console.log("Getting scheduled questions");
+
+    Question.find({
+        notified: {$ne: true},
+        schedule: {$lte: Date.now()}
+    }).then(questions => {
+        return callback(questions);
+    }).catch(err => {
+        console.log(err.message || 'Technical error.');
+        return callback([]);
+    });
+}
+
+exports.updateScheduled = (questionId) => {
+    console.log('Updating scheduled question...');
+
+    Question.findByIdAndUpdate(questionId, {
+        notified: true
+    }).catch(err => {
+        console.log(err.message || 'Technical error.');
     });
 };

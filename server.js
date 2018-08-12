@@ -73,3 +73,11 @@ require('./routes/user.routes.js')(app);
 app.listen(3000,function(){
   console.log('Live at Port 3000');
 });
+
+
+const Poller = require('./Poller');
+let poller = new Poller(60000); 
+poller.onPoll(() => {
+    poller.poll();
+});
+poller.poll();
