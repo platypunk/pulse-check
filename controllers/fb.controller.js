@@ -2,76 +2,7 @@ const request = require('request');
 const util = require('util');
 const fbConfig = require('../config/fb.config.js');
 const questionCtrl = require('../controllers/question.controller.js');
-const answerCtrl = require('../controllers/answer.controller.js');
-const messageCtrl = require('../controllers/message.controller.js');
 
-exports.verifyMessage = (req, res) => {
-    console.log('Verifying message...');
-    let VERIFY_TOKEN = fbConfig.verifyToken;
-    
-    let mode = req.query['hub.mode'];
-    let token = req.query['hub.verify_token'];
-    let challenge = req.query['hub.challenge'];
-    
-    if (mode && token) {
-        if (mode === 'subscribe' && token === VERIFY_TOKEN) {
-            console.log('WEBHOOK_VERIFIED');
-            res.status(200).send(challenge);
-        } else {
-            res.sendStatus(403);      
-        }
-    } else {
-        res.sendStatus(400);
-    }
-};
-
-exports.receiveMessage = (req, res) => {
-    console.log('Receiving message...');
-
-    let body = req.body;
-    try {
-        if (body.object === 'page') {
-            body.entry.forEach(function(entry) {
-                if (entry.messaging) {
-                    let message = entry.messaging[0];
-                    console.log(message);
-                    if (message.postback) {
-                        let questionId = message.postback.payload;
-                        let answer = message.postback.title;
-                        let memberId = message.sender.id;
-                        console.log(util.format("Received answer %s for question %s from member %s", answer, questionId, memberId));
-                        answerCtrl.findAnswerByUser(questionId, memberId, function(answer) {
-                            if (answer) {
-                                exports.sendMessage(memberId, fbConfig.answerAlreadyExist);
-                            } else {
-                                answerCtrl.save(questionId, memberId, answer);
-                                questionCtrl.findById(questionId, function(question) {
-                                    if (question && question.comment) {
-                                        exports.sendMessage(memberId, fbConfig.answerReceivedComment);
-                                    } else {
-                                        exports.sendMessage(memberId, fbConfig.answerReceived);
-                                    }
-                                });
-                                
-                            }
-                        });
-                    } else if (message.message) {
-                        messageCtrl.save(message.sender.id, message.message.text);
-                        // answerCtrl.saveComment();
-                    }
-                    // comment
-                    // hello
-                    // info / help
-                    // view questions
-                }
-            });
-        }
-    } catch (err) {
-        console.log(err || "Technical error");
-    }
-
-    res.status(200).send('EVENT_RECEIVED');
-};
 
 exports.getGroups = (req, res) => {
     console.log('Getting groups...');

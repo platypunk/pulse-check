@@ -42,9 +42,10 @@ if (jwtConfig.enabled) {
     if (token) {
       jwt.verify(token, app.get('superSecret'), function(err, decoded) {      
         if (err) {
-          return res.json({
+          return res.status(403).send({ 
             success: false, 
-            message: 'Failed to authenticate token.' });    
+            message: 'Failed to authenticate token.'
+          });
         } else {
           req.decoded = decoded;    
           next();
@@ -60,7 +61,7 @@ if (jwtConfig.enabled) {
 }
 
 // exclude webhook from jwt
-require('./routes/fb.ext.routes.js')(app);
+require('./routes/bot.routes.js')(app);
 
 app.use('/',router);
 
@@ -81,3 +82,4 @@ poller.onPoll(() => {
     poller.poll();
 });
 poller.poll();
+

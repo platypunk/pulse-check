@@ -10,6 +10,7 @@ module.exports = {
     getMember: '%s?fields=id,name,picture&access_token=%s',
     // messages
     answerReceived: 'Your answer has been recorded, thank you',
-    answerReceivedComment: 'Your answer has been recorded, if you have any comment on the topic please type it below',
+    answerReceivedComment: 'Your answer has been recorded, do you have any comments?',
+    askComment: 'Please type your comment',
     answerAlreadyExist: 'Sorry you already provided an answer for this question',
 }
