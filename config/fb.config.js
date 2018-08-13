@@ -6,5 +6,6 @@ module.exports = {
     verifyToken: 'cowabunga',
     sendMessage: 'me/messages?access_token=%s',
     getGroups: 'community/groups?fields=id,name,privacy,archived,is_workplace_default&access_token=%s',
-    getMembers: '%s/members?access_token=%s'
+    getMembers: '%s/members?access_token=%s',
+    getMember: '%s?fields=id,name,picture&access_token=%s',
 }

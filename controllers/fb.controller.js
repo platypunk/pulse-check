@@ -85,7 +85,7 @@ function getFbGroups(groups, url, res) {
         function (err, response, body) {
             if (err || response.statusCode != 200) {
                 console.log(err ? err.message : 'Technical error.');
-                return res.status(500).send({
+                res.status(500).send({
                     success: false,
                     message: 'Technical error.'
                 });
@@ -108,7 +108,7 @@ function getFbGroups(groups, url, res) {
             if (json.paging && json.paging.next) {
                 getFbGroups(groups, json.paging.next, res);
             } else {
-                return res.status(200).send(groups);
+                res.status(200).send(groups);
             }
         }
         );
@@ -123,7 +123,7 @@ exports.reqMembers = (req, res) => {
             req.params.groupId, 
             fbConfig.appPageToken),
         function(members) {
-            return res.status(200).send(members);
+            res.status(200).send(members);
         });
 };
 
@@ -167,6 +167,25 @@ function getFbMembers(members, url, callback) {
         }
     );
 }
+
+exports.getMember = (req, res) => {
+    let url = util.format(fbConfig.url + fbConfig.getMember, req.params.memberId, fbConfig.appPageToken);
+    console.log("GET request to " + url);
+
+    request.get(
+        url,
+        function (err, response, body) {
+            if (err || response.statusCode != 200) {
+                console.log(err ? err.message : 'Technical error.');
+                res.status(500).send({
+                    success: false,
+                    message: 'Technical error.'
+                });
+            }
+            res.status(200).send(JSON.parse(body));
+        }
+    );
+};
 
 exports.sendQuestionNow = (req, res) => {
     console.log('Sending question now...');
@@ -247,8 +266,11 @@ exports.sendMessage = (memberId, message) => {
 };
 
 function sendMsg(jsonReq, callback) {
+    let url = fbConfig.url + util.format(fbConfig.sendMessage, fbConfig.appPageToken);
+    console.log("POST request to " + url);
+
     request.post(
-        fbConfig.url + util.format(fbConfig.sendMessage, fbConfig.appPageToken),
+        url,
         {json: jsonReq},
         function (err, response, body) {
             if (err || response.statusCode != 200) {

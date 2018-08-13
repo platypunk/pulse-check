@@ -5,5 +5,7 @@ module.exports = (app) => {
 
     app.get('/fb/members/:groupId', fb.reqMembers);
 
+    app.get('/fb/member/:memberId', fb.getMember);
+
     app.get('/fb/send/:questionId', fb.sendQuestionNow);
 }
