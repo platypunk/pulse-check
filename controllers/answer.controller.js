@@ -232,7 +232,7 @@ exports.findAnswer = (req, res) => {
     }
 };
 
-exports.findAnswerByUser = (questionId, userId, calllback) => {
+exports.findAnswerByUser = (questionId, userId, callback) => {
     console.log('Finding answer by user...');
 
     Answer.find({
