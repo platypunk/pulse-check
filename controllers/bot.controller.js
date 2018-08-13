@@ -15,31 +15,32 @@ const bot = new BootBot({
 
 bot.on('message', (payload, chat) => {
   const text = payload.message.text;
-  console.log("Bot received message " + text);
-
+  console.log(`Bot received message: ${text}`);
   messageCtrl.save(payload.sender.id, text);
 });
 
 bot.on('postback', (payload, chat) => {
-  console.log("Bot received postback " + payload.postback.payload);
+  console.log(`Bot received postback: ${payload.postback.payload}`);
+  messageCtrl.save(payload.sender.id, `questionId: ${payload.postback.title}, 
+    answer: ${payload.postback.payload}`);
 
   let questionId = payload.postback.payload;
   let answer = payload.postback.title;
   let memberId = payload.sender.id;
   console.log(`Received answer ${answer} for question ${questionId} from member ${memberId}`);
   
-  answerCtrl.findAnswerByUser(questionId, memberId, function(answer) {
-      if (answer) {
-        chat.say(fbConfig.answerAlreadyExist);
-      } else {
-        answerCtrl.save(questionId, memberId, answer);
+  answerCtrl.findAnswerByUser(questionId, memberId, function(answerByUser) {
+    if (answerByUser) {
+      console.log(`Bot chatting: ${fbConfig.answerAlreadyExist}`);
+      chat.say(fbConfig.answerAlreadyExist);
+    } else {
+      answerCtrl.save(questionId, memberId, answer, function(savedAnswer) {
         // comment
         questionCtrl.findById(questionId, function(question) {
             if (question && question.comment) {
               const askHaveComment = (convo) => {
                 convo.ask(fbConfig.answerReceivedComment, (payload, convo) => {
-                  const text = payload.message.text;
-                  if (text.toLowerCase() === 'yes') {
+                  if (payload.message && payload.message.text.toLowerCase() === 'yes') {
                     askComment(convo);
                   } else {
                     convo.end();
@@ -48,39 +49,56 @@ bot.on('postback', (payload, chat) => {
               };
               const askComment = (convo) => {
                 convo.ask(fbConfig.askComment, (payload, convo) => {
-                  const text = payload.message.text;
-                  // save comment
+                  if (payload.message) {
+                    const text = payload.message.text;
+                    console.log('AFTER ' + convo.get('answerId'));
+                    answerCtrl.saveComment(answerId, text);
+                  }
                   convo.end();
                 });
               };
               chat.conversation((convo) => {
+                convo.set('answerId', savedAnswer._id);
+                console.log('BEFORE ' + convo.get('answerId'));
                 askHaveComment(convo);
               });
             } else {
+              console.log(`Bot chatting: ${fbConfig.answerReceived}`);
               chat.say(fbConfig.answerReceived);
             }
         });
-      }
+      });      
+    }
   });
 });
 
 bot.hear(['hello', 'hi', /hey( there)?/i], (payload, chat) => {
+  console.log('Bot chatting: Hello!');
   chat.say('Hello!');
 });
 
 bot.hear([/(good)?bye/i, /see (ya|you)/i, 'adios'], (payload, chat) => {
   // Matches: goodbye, bye, see ya, see you, adios
-  chat.say('Bye, human!');
+  console.log('Bot chatting: Bye!');
+  chat.say('Bye!');
+});
+
+bot.hear(['thanks', 'thank you'], (payload, chat) => {
+  console.log("Bot chatting: You're welcome!");
+  chat.say("You're welcome!");
 });
 
 bot.hear(['help'], (payload, chat) => {
-  chat.say({
-    text: 'Hello I am Pulsy, I am your digital sentiment stones.',
-    buttons: [
-      { type: 'postback', title: 'View Questions', payload: 'VIEW_QUESTIONS' },
-      { type: 'postback', title: 'View Answers', payload: 'VIEW_ANSWERS' }
-    ]
-  });
+  console.log('Hello I am Pulsy, I am your digital sentiment stones.');
+  chat.say('Hello I am Pulsy, I am your digital sentiment stones.'
+  // {
+  //   text: 'Hello I am Pulsy, I am your digital sentiment stones.',
+  //   buttons: [
+  //     { type: 'postback', title: 'View Questions', payload: 'VIEW_QUESTIONS' },
+  //     { type: 'postback', title: 'View Answers', payload: 'VIEW_ANSWERS' }
+  //   ]
+  // }
+  );
 });
 
 exports.receiveMessage = (req, res) => {
@@ -94,10 +112,6 @@ exports.receiveMessage = (req, res) => {
                     let message = entry.messaging[0];
                     console.log(message)
                     bot.handleFacebookData(body);
-                    // comment
-                    // hello
-                    // info / help
-                    // view questions
                 }
             });
         }

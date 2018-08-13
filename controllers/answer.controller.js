@@ -290,10 +290,9 @@ exports.findAnswerByUser = (questionId, userId, callback) => {
     }).catch(err => {
         console.log(err.message || 'Technical error.');
     });
-    return callback(null);
 };
 
-exports.save = (questionId, userId, answer) => {
+exports.save = (questionId, userId, answer, callback) => {
     console.log('Saving answer...');
     
     const ans = new Answer({
@@ -303,8 +302,27 @@ exports.save = (questionId, userId, answer) => {
     });
     
     ans.save()
-    .catch(err => {
+    .then(data => {
+        return callback(data);
+    }).catch(err => {
         console.log(err.message || 'Technical error.');
     });
+};
 
+exports.saveComment = (answerId, comment) => {
+    console.log(`Updating comment for ${answerId}`);
+
+    Answer.findById(answerId)
+    .then(answer => {
+        if(answer) {    
+            answer.comment = comment;
+            answer.save(function(err) {
+                if(err) {
+                    console.log(err.message || 'Technical error.');
+                }
+            });
+        }
+    }).catch(err => {
+        console.log(err.message || 'Technical error.');
+    });
 };
