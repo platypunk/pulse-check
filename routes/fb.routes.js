@@ -5,5 +5,5 @@ module.exports = (app) => {
 
     app.get('/fb/members/:groupId', fb.reqMembers);
 
-    app.post('/fb/send', fb.sendMessage);
+    app.post('/fb/send/:questionId', fb.sendQuestionNow);
 }

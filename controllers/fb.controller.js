@@ -52,7 +52,7 @@ exports.receiveMessage = (req, res) => {
     } catch (err) {
         console.log(err || "Technical error");
     }
-    
+
     res.status(200).send('EVENT_RECEIVED');
 };
 
@@ -152,11 +152,16 @@ function getFbMembers(members, url, callback) {
                 return callback(members);
             }
         }
-        );
+    );
 }
 
+exports.sendQuestionNow = (req, res) => {
+    console.log('Sending question now...');
+
+};
+
 exports.sendQuestion = (memberId, question, callback) => {
-    console.log('Sending message...');
+    console.log('Sending question...');
 
     let buttons = [];
     question.options.forEach(function(option) {
@@ -178,28 +183,27 @@ exports.sendQuestion = (memberId, question, callback) => {
                 payload: {  
                     template_type: generic,
                     elements: [{  
-                            title: question,
-                            buttons:buttons
-                        }
+                        title: question.question,
+                        buttons: buttons
+                    }
                     ]
                 }
             }
         }
-    }
-};
+    };
 
-request.post(
-    fbConfig.url + util.format(fbConfig.sendMessage, fbConfig.appPageToken),
-    {json: jsonReq},
-    function (err, response, body) {
-        if (err || response.statusCode != 200) {
-            console.log(err? err.message : 'Technical error.');
-            return callback([]);
+    request.post(
+        fbConfig.url + util.format(fbConfig.sendMessage, fbConfig.appPageToken),
+        {json: jsonReq},
+        function (err, response, body) {
+            if (err || response.statusCode != 200) {
+                console.log(err? err.message : 'Technical error.');
+                return callback([]);
+            }
+            else {
+                return callback(body);
+            }
         }
-        else {
-            return callback(body);
-        }
-    }
     );
 };
 
