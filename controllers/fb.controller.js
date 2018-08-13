@@ -46,9 +46,9 @@ exports.receiveMessage = (req, res) => {
                                 answerCtrl.save(questionId, answer, memberId);
                                 questionCtrl.findById(questionId, function(question) {
                                     if (question.comment) {
-                                        sendMessage(memberId, "Your answer has been recorded, if you have any comment on the topic please let me know");
+                                        exports.sendMessage(memberId, "Your answer has been recorded, if you have any comment on the topic please let me know");
                                     } else {
-                                        sendMessage(memberId, "Your answer has been recorded, thank you");
+                                        exports.sendMessage(memberId, "Your answer has been recorded, thank you");
                                     }
                                 });
                                 
@@ -56,6 +56,7 @@ exports.receiveMessage = (req, res) => {
                         });
                         
                     }
+                    // comment
                     // hello
                     // info / help
                     // view questions
