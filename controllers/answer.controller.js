@@ -312,16 +312,18 @@ exports.save = (questionId, userId, answer, callback) => {
 exports.saveComment = (answerId, comment) => {
     console.log(`Updating comment for ${answerId}`);
 
-    Answer.findById(answerId)
-    .then(answer => {
-        if(answer) {    
-            answer.comment = comment;
-            answer.save(function(err) {
-                if(err) {
-                    console.log(err.message || 'Technical error.');
-                }
-            });
-        }
+    Answer.findByIdAndUpdate(answerId, {
+        comment: comment
+    }).catch(err => {
+        console.log(err.message || 'Technical error.');
+    });
+};
+
+exports.updateAnswer = (answerId, answer) => {
+    console.log('Updating answer text...');
+
+    Answer.findByIdAndUpdate(answerId, {
+        answer: answer
     }).catch(err => {
         console.log(err.message || 'Technical error.');
     });

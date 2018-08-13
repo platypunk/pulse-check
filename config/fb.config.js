@@ -11,6 +11,9 @@ module.exports = {
     // messages
     answerReceived: 'Your answer has been recorded, thank you',
     answerReceivedComment: 'Your answer has been recorded, do you have any comments?',
+    noUpdate: 'Thank you for your response',
     askComment: 'Please type your comment',
+    commentReceived: 'Your comment has been recorded, thank you',
     answerAlreadyExist: 'Sorry you already provided an answer for this question',
+    answerReceived: 'Your answer has been updated, thank you',
 }

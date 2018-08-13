@@ -32,7 +32,26 @@ bot.on('postback', (payload, chat) => {
   answerCtrl.findAnswerByUser(questionId, memberId, function(answerByUser) {
     if (answerByUser) {
       console.log(`Bot chatting: ${fbConfig.answerAlreadyExist}`);
-      chat.say(fbConfig.answerAlreadyExist);
+      const askUpdateAnswer = (convo) => {
+        convo.ask(fbConfig.answerAlreadyExist, (payload, convo) => {
+          if (payload.message && payload.message.text.toLowerCase() === 'yes') {
+            console.log('AFTER ' + convo.get('answerId'));
+            console.log('AFTER ' + convo.get('answerText'));
+            answerCtrl.updateAnswer(convo.get('answerId'), convo.get('answerText'));
+            chat.say(fbConfig.answerUpdated);
+          } else {
+            chat.say(fbConfig.noUpdate);
+            convo.end();
+          }
+        });
+      };
+      chat.conversation((convo) => {
+        convo.set('answerId', answerByUser._id);
+        convo.set('answerText', answer);
+        console.log('BEFORE ' + convo.get('answerId'));
+        console.log('BEFORE ' + convo.get('answerText'));
+        askUpdateAnswer(convo);
+      });
     } else {
       answerCtrl.save(questionId, memberId, answer, function(savedAnswer) {
         // comment
@@ -43,6 +62,7 @@ bot.on('postback', (payload, chat) => {
                   if (payload.message && payload.message.text.toLowerCase() === 'yes') {
                     askComment(convo);
                   } else {
+                    chat.say(fbConfig.noUpdate);
                     convo.end();
                   }
                 });
@@ -53,8 +73,11 @@ bot.on('postback', (payload, chat) => {
                     const text = payload.message.text;
                     console.log('AFTER ' + convo.get('answerId'));
                     answerCtrl.saveComment(answerId, text);
+                    chat.say(fbConfig.commentReceived);
+                    convo.end();
+                  } else {
+                    convo.end();
                   }
-                  convo.end();
                 });
               };
               chat.conversation((convo) => {
