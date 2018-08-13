@@ -1,6 +1,7 @@
 const request = require('request');
 const util = require('util');
 const fbConfig = require('../config/fb.config.js');
+const questionCtrl = require('../controllers/question.controller.js');
 
 exports.verifyMessage = (req, res) => {
     console.log('Verifying message...');
@@ -35,14 +36,25 @@ exports.receiveMessage = (req, res) => {
                     if (message.postback) {
                         let questionId = message.postback.payload;
                         let answer = message.postback.title;
-                        console.log("Received answer " + answer + " for question " + questionId);
+                        let memberId = message.sender.id;
+                        console.log(util.format("Received answer %s for question %s from member %s", answer, questionId, memberId));
+                        questionCtrl.findAnswerByUser(questionId, memberId, function(answer) {
+                            if (answer) {
+                                sendMessage(memberId, "Sorry you already provided an answer for this question");
+                            } else {
+                                questionCtrl.save(questionId, answer, memberId);
+                                if (question.comment) {
+                                    sendMessage(memberId, "Your answer has been recorded, if you have any comment on the topic please let me know");
+                            } else {
+                                    sendMessage(memberId, "Your answer has been recorded, thank you");
+                                }
+                            }
+                        });
+                        
                     }
-                    // TODO find thread
-                    // save answer
                     // hello
                     // info / help
                     // view questions
-
                 }
             });
         }
@@ -155,6 +167,26 @@ function getFbMembers(members, url, callback) {
 exports.sendQuestionNow = (req, res) => {
     console.log('Sending question now...');
 
+    questionCtrl.findById(req.params.questionId, function(question) {
+        exports.getMembers(question.groupId, function(members) {
+            if (members) {
+                console.log("Sending to members now\n" + JSON.stringify(members));
+                members.forEach(function(member) {
+                    exports.sendQuestion(member.id, 
+                        question,
+                        function(res) {
+                            if (res) {
+                                console.log("Send response\n" + JSON.stringify(res));
+                                questionCtrl.updateNotified(question._id);
+                            }
+                        });
+                });
+            }
+        });
+    });
+    res.status(200).send({
+        success: true
+    });
 };
 
 exports.sendQuestion = (memberId, question, callback) => {
@@ -189,6 +221,28 @@ exports.sendQuestion = (memberId, question, callback) => {
         }
     };
 
+    sendMsg(jsonReq, callback);
+};
+
+exports.sendMessage = (memberId, message) => {
+    console.log('Sending message...');
+
+    jsonReq = 
+    {
+        recipient: {
+            id: memberId
+        },
+        message: {
+            text: message
+        }
+    };
+
+    sendMsg(jsonReq, function(res) {
+        console.log("Send response\n" + res);
+    });
+};
+
+function sendMsg(jsonReq, callback) {
     request.post(
         fbConfig.url + util.format(fbConfig.sendMessage, fbConfig.appPageToken),
         {json: jsonReq},
@@ -202,5 +256,5 @@ exports.sendQuestion = (memberId, question, callback) => {
             }
         }
     );
-};
+}
 

@@ -164,12 +164,24 @@ exports.getScheduled = (callback) => {
     });
 }
 
-exports.updateScheduled = (questionId) => {
+exports.updateNotified = (questionId) => {
     console.log('Updating scheduled question...');
 
     Question.findByIdAndUpdate(questionId, {
         notified: true
     }).catch(err => {
         console.log(err.message || 'Technical error.');
+    });
+};
+
+exports.findById = (questionId, callback) => {
+    console.log('Getting question by id...');
+
+    Question.findById(questionId)
+    .then(question => {
+        return callback(question);
+    }).catch(err => {
+        console.log(err.message || 'Technical error.');
+        return callback(null);
     });
 };

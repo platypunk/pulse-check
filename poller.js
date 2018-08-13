@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const question = require('./controllers/question.controller.js');
+const questionCtrl = require('./controllers/question.controller.js');
 const fb = require('./controllers/fb.controller.js');
 
 
@@ -13,21 +13,20 @@ class Poller extends EventEmitter {
         setTimeout(() => this.emit('poll'), this.timeout);
         console.log('Polling');
 
-        question.getScheduled(function(schedQuestions) {
-            if (schedQuestions) {
-                console.log("Poll questions\n" + schedQuestions);
-                schedQuestions.forEach(function(schedQuestion) {
-                    fb.getMembers(schedQuestion.groupId, function(members) {
+        questionCtrl.getScheduled(function(questions) {
+            if (questions) {
+                console.log("Poll questions\n" + questions);
+                questions.forEach(function(question) {
+                    fb.getMembers(question.groupId, function(members) {
                         if (members) {
                             console.log("Poll members\n" + JSON.stringify(members));
                             members.forEach(function(member) {
                                 fb.sendQuestion(member.id, 
-                                    schedQuestion,
-                                    function(thread) {
-                                        if (thread) {
-                                            console.log("Poll thread\n" + JSON.stringify(thread));
-                                            question.updateScheduled(schedQuestion._id);
-                                            // TODO save thread
+                                    question,
+                                    function(res) {
+                                        if (res) {
+                                            console.log("Send response\n" + JSON.stringify(res));
+                                            questionCtrl.updateNotified(question._id);
                                         }
                                     });
                             });

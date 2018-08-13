@@ -231,3 +231,34 @@ exports.findAnswer = (req, res) => {
         }
     }
 };
+
+exports.findAnswerByUser = (questionId, userId, calllback) => {
+    console.log('Finding answer by user...');
+
+    Answer.find({
+        questionId: questionId,
+        userId: userId
+    })
+    .then(answer => {
+        return callback(answer);
+    }).catch(err => {
+        console.log(err.message || 'Technical error.');
+    });
+    return callback(null);
+};
+
+exports.save = (questionId, userId, answer) => {
+    console.log('Saving answer...');
+    
+    const Answer = new Answer({
+        questionId: questionId,
+        userId: userId,
+        answer: answer
+    });
+    
+    Answer.save()
+    .catch(err => {
+        console.log(err.message || 'Technical error.');
+    });
+
+};
