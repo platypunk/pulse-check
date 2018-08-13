@@ -3,7 +3,7 @@ module.exports = (app) => {
 
     app.get('/fb/groups', fb.getGroups);
 
-    app.get('/fb/members/:groupId', fb.getMembers);
+    app.get('/fb/members/:groupId', fb.reqMembers);
 
     app.post('/fb/send', fb.sendMessage);
 }
