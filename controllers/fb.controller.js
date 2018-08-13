@@ -33,7 +33,7 @@ exports.receiveMessage = (req, res) => {
                     let message = entry.messaging[0];
                     console.log(message);
                     if (message.postback && message.postback.payload) {
-                        let splits = message.split(/_(\/+)/);
+                        let splits = message.postback.payload.split(/_(\/+)/);
                         if (splits.length === 2) {
                             let questionId = splits[0];
                             let answer = splits[1];
@@ -179,9 +179,9 @@ exports.sendQuestion = (memberId, question, callback) => {
         },
         message: {
             attachment: {  
-                type: template,
+                type: 'template',
                 payload: {  
-                    template_type: generic,
+                    template_type: 'generic',
                     elements: [{  
                         title: question.question,
                         buttons: buttons
