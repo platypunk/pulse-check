@@ -2,6 +2,7 @@ const request = require('request');
 const util = require('util');
 const fbConfig = require('../config/fb.config.js');
 const questionCtrl = require('../controllers/question.controller.js');
+const answerCtrl = require('../controllers/answer.controller.js');
 
 exports.verifyMessage = (req, res) => {
     console.log('Verifying message...');
@@ -38,11 +39,11 @@ exports.receiveMessage = (req, res) => {
                         let answer = message.postback.title;
                         let memberId = message.sender.id;
                         console.log(util.format("Received answer %s for question %s from member %s", answer, questionId, memberId));
-                        questionCtrl.findAnswerByUser(questionId, memberId, function(answer) {
+                        answerCtrl.findAnswerByUser(questionId, memberId, function(answer) {
                             if (answer) {
                                 sendMessage(memberId, "Sorry you already provided an answer for this question");
                             } else {
-                                questionCtrl.save(questionId, answer, memberId);
+                                answerCtrl.save(questionId, answer, memberId);
                                 if (question.comment) {
                                     sendMessage(memberId, "Your answer has been recorded, if you have any comment on the topic please let me know");
                             } else {
