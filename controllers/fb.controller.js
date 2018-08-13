@@ -3,7 +3,7 @@ const util = require('util');
 const fbConfig = require('../config/fb.config.js');
 
 exports.verifyMessage = (req, res) => {
-    console.log('Verifying message...\n' + JSON.stringify(req.body));
+    console.log('Verifying message...');
     let VERIFY_TOKEN = fbConfig.verifyToken;
     
     let mode = req.query['hub.mode'];
@@ -23,7 +23,7 @@ exports.verifyMessage = (req, res) => {
 };
 
 exports.receiveMessage = (req, res) => {
-    console.log('Receiving message...\n' + JSON.stringify(req.body));
+    console.log('Receiving message...');
 
     let body = req.body;
     if (body.object === 'page') {
