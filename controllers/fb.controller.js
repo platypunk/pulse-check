@@ -45,7 +45,7 @@ exports.receiveMessage = (req, res) => {
                             } else {
                                 answerCtrl.save(questionId, answer, memberId);
                                 questionCtrl.findById(questionId, function(question) {
-                                    if (question.comment) {
+                                    if (question && question.comment) {
                                         exports.sendMessage(memberId, "Your answer has been recorded, if you have any comment on the topic please let me know");
                                     } else {
                                         exports.sendMessage(memberId, "Your answer has been recorded, thank you");
@@ -54,7 +54,6 @@ exports.receiveMessage = (req, res) => {
                                 
                             }
                         });
-                        
                     }
                     // comment
                     // hello
