@@ -32,13 +32,10 @@ exports.receiveMessage = (req, res) => {
                 if (entry.messaging) {
                     let message = entry.messaging[0];
                     console.log(message);
-                    if (message.postback && message.postback.payload) {
-                        let splits = message.postback.payload.split(/_(\/+)/);
-                        if (splits.length === 2) {
-                            let questionId = splits[0];
-                            let answer = splits[1];
-                            console.log("Received answer " + answer + " for question " + questionId);
-                        }
+                    if (message.postback) {
+                        let questionId = message.postback.payload;
+                        let answer = message.postback.title;
+                        console.log("Received answer " + answer + " for question " + questionId);
                     }
                     // TODO find thread
                     // save answer
@@ -168,7 +165,7 @@ exports.sendQuestion = (memberId, question, callback) => {
         jsonOpt = {
             type: 'postback',
             title: option,
-            payload: question._id + '/' + option
+            payload: question._id
         };
         buttons.push(jsonOpt);
     });
