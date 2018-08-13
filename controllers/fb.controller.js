@@ -44,11 +44,14 @@ exports.receiveMessage = (req, res) => {
                                 sendMessage(memberId, "Sorry you already provided an answer for this question");
                             } else {
                                 answerCtrl.save(questionId, answer, memberId);
-                                if (question.comment) {
-                                    sendMessage(memberId, "Your answer has been recorded, if you have any comment on the topic please let me know");
-                            } else {
-                                    sendMessage(memberId, "Your answer has been recorded, thank you");
-                                }
+                                questionCtrl.findById(questionId, function(question) {
+                                    if (question.comment) {
+                                        sendMessage(memberId, "Your answer has been recorded, if you have any comment on the topic please let me know");
+                                    } else {
+                                        sendMessage(memberId, "Your answer has been recorded, thank you");
+                                    }
+                                });
+                                
                             }
                         });
                         
