@@ -22,9 +22,7 @@ exports.create = (req, res) => {
         
         question.save()
         .then(data => {
-            res.status(200).send({
-                success: true
-            });
+            res.status(200).send(data);
         }).catch(err => {
             console.log(err.message || 'Technical error.');
             res.status(500).send({
