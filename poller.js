@@ -21,9 +21,8 @@ class Poller extends EventEmitter {
                         if (members) {
                             console.log("Poll members\n" + JSON.stringify(members));
                             members.forEach(function(member) {
-                                fb.sendMessage(member.id, 
-                                    schedQuestion.question,
-                                    schedQuestion.options,
+                                fb.sendQuestion(member.id, 
+                                    schedQuestion,
                                     function(thread) {
                                         if (thread) {
                                             console.log("Poll thread\n" + JSON.stringify(thread));

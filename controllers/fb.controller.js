@@ -26,20 +26,33 @@ exports.receiveMessage = (req, res) => {
     console.log('Receiving message...');
 
     let body = req.body;
-    if (body.object === 'page') {
-        body.entry.forEach(function(entry) {
-            if (entry.messaging) {
-                let webhook_event = entry.messaging[0];
-                console.log(webhook_event);
-                // TODO find thread
-                // save answer
-                // hello
-                // info / help
-                // view questions
+    try {
+        if (body.object === 'page') {
+            body.entry.forEach(function(entry) {
+                if (entry.messaging) {
+                    let message = entry.messaging[0];
+                    console.log(message);
+                    if (message.postback && message.postback.payload) {
+                        let splits = message.split(/_(\/+)/);
+                        if (splits.length === 2) {
+                            let questionId = splits[0];
+                            let answer = splits[1];
+                            console.log("Received answer " + answer + " for question " + questionId);
+                        }
+                    }
+                    // TODO find thread
+                    // save answer
+                    // hello
+                    // info / help
+                    // view questions
 
-            }
-        });
+                }
+            });
+        }
+    } catch (err) {
+        console.log(err || "Technical error");
     }
+    
     res.status(200).send('EVENT_RECEIVED');
 };
 
@@ -85,7 +98,7 @@ function getFbGroups(groups, url, res) {
                 return res.status(200).send(groups);
             }
         }
-    );
+        );
 }
 
 exports.reqMembers = (req, res) => {
@@ -139,20 +152,20 @@ function getFbMembers(members, url, callback) {
                 return callback(members);
             }
         }
-    );
+        );
 }
 
-exports.sendMessage = (memberId, question, options, callback) => {
+exports.sendQuestion = (memberId, question, callback) => {
     console.log('Sending message...');
 
-    let quickReplies = [];
-    options.forEach(function(option) {
+    let buttons = [];
+    question.options.forEach(function(option) {
         jsonOpt = {
-            content_type: 'text',
+            type: 'postback',
             title: option,
-            payload: option
+            payload: question._id + '/' + option
         };
-        quickReplies.push(jsonOpt);
+        buttons.push(jsonOpt);
     });
     jsonReq = 
     {
@@ -160,23 +173,33 @@ exports.sendMessage = (memberId, question, options, callback) => {
             id: memberId
         },
         message: {
-            text: question,
-            quick_replies: quickReplies
+            attachment: {  
+                type: template,
+                payload: {  
+                    template_type: generic,
+                    elements: [{  
+                            title: question,
+                            buttons:buttons
+                        }
+                    ]
+                }
+            }
         }
-    };
+    }
+};
 
-    request.post(
-        fbConfig.url + util.format(fbConfig.sendMessage, fbConfig.appPageToken),
-        {json: jsonReq},
-        function (err, response, body) {
-            if (err || response.statusCode != 200) {
-                console.log(err? err.message : 'Technical error.');
-                return callback([]);
-            }
-            else {
-                return callback(body);
-            }
+request.post(
+    fbConfig.url + util.format(fbConfig.sendMessage, fbConfig.appPageToken),
+    {json: jsonReq},
+    function (err, response, body) {
+        if (err || response.statusCode != 200) {
+            console.log(err? err.message : 'Technical error.');
+            return callback([]);
         }
+        else {
+            return callback(body);
+        }
+    }
     );
 };
 
