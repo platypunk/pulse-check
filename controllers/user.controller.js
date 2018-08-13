@@ -208,8 +208,7 @@ exports.authenticate = (req, res) => {
         });
     } else {
         User.findOne({
-            username: req.body.username,
-            deleted: {$ne: null}
+            username: req.body.username
         })
         .then(user => {
             if(!user) {
