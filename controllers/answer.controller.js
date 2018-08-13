@@ -250,13 +250,13 @@ exports.findAnswerByUser = (questionId, userId, callback) => {
 exports.save = (questionId, userId, answer) => {
     console.log('Saving answer...');
     
-    const Answer = new Answer({
+    const ans = new Answer({
         questionId: questionId,
         userId: userId,
         answer: answer
     });
     
-    Answer.save()
+    ans.save()
     .catch(err => {
         console.log(err.message || 'Technical error.');
     });
