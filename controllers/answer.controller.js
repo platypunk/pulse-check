@@ -1,4 +1,5 @@
 const Answer = require('../models/answer.model.js');
+const questionCtrl = require('./question.controller.js');
 
 exports.create = (req, res) => {
     console.log('Saving answer...');
@@ -202,6 +203,52 @@ exports.findAnswer = (req, res) => {
                     res.status(500).send({
                         message: 'Technical error.'
                     });
+                });
+            } else if (req.query.time === 'true') {
+                questionCtrl.findById(req.query.questionId, function(question) {
+                    if (question) {
+                        Answer.find({
+                            questionId: req.query.questionId,
+                            deleted: {$ne: true}
+                        })
+                        .then(answers => {
+                            if(!answers) {
+                                res.status(404).send({
+                                    message: 'Data not found with id ' + req.params.questionId
+                                });            
+                            }
+                            let times = [];
+                            let sum = 0, count = 0;
+                            answers.forEach(function(answer) {
+                                let diff = answer.updatedAt - question.schedule;
+                                time = {
+                                    userId: answer.userId,
+                                    time: diff
+                                };
+                                times.push(time);
+                                sum += diff;
+                                count++;
+                            });
+                            res.send({
+                                times: times,
+                                ave: sum/count
+                            });
+                        }).catch(err => {
+                            if(err.kind === 'ObjectId') {
+                                res.status(404).send({
+                                    message: 'Data not found'
+                                });
+                            }
+                            console.log(err.message || 'Technical error.');
+                            res.status(500).send({
+                                message: 'Technical error.'
+                            });
+                        });
+                    } else {
+                        res.status(404).send({
+                            message: 'Data not found with id ' + req.params.questionId
+                        });
+                    }
                 });
             } else {
                 console.log('Getting answers by question...');
