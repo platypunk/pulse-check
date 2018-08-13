@@ -96,31 +96,27 @@ bot.on('postback', (payload, chat) => {
 });
 
 bot.hear(['hello', 'hi', /hey( there)?/i], (payload, chat) => {
-  console.log('Bot chatting: Hello!');
-  chat.say('Hello!');
+  console.log(`Bot chatting: ${fbConfig.hello}`);
+  chat.say(fbConfig.hello);
 });
 
 bot.hear([/(good)?bye/i, /see (ya|you)/i, 'adios'], (payload, chat) => {
   // Matches: goodbye, bye, see ya, see you, adios
-  console.log('Bot chatting: Bye!');
-  chat.say('Bye!');
+  console.log(`Bot chatting: ${fbConfig.bye}`);
+  chat.say(fbConfig.bye);
 });
 
 bot.hear(['thanks', 'thank you'], (payload, chat) => {
-  console.log("Bot chatting: You're welcome!");
-  chat.say("You're welcome!");
+  console.log(`Bot chatting: ${fbConfig.welcome}`);
+  chat.say(fbConfig.welcome);
 });
 
 bot.hear(['help'], (payload, chat) => {
-  console.log('Hello I am Pulsy, I am your digital sentiment stones.');
-  chat.say('Hello I am Pulsy, I am your digital sentiment stones.'
-  // {
-  //   text: 'Hello I am Pulsy, I am your digital sentiment stones.',
-  //   buttons: [
-  //     { type: 'postback', title: 'View Questions', payload: 'VIEW_QUESTIONS' },
-  //     { type: 'postback', title: 'View Answers', payload: 'VIEW_ANSWERS' }
-  //   ]
-  // }
+  console.log('Hello I am Pulsy, your digital sentiment stones.');
+  chat.say('Hello I am Pulsy, your digital sentiment stones.', {typing: true});
+  // chat.say('I will ask you pulse questions as they are scheduled.', {typing: true});
+  // chat.say('You can update your answers by clicking on an old question.', {typing: true});
+  // chat.say('If you want to ask a sentiment question, please access https://pulsecheck.tk');
   );
 });
 

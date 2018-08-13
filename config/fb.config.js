@@ -16,4 +16,6 @@ module.exports = {
     commentReceived: 'Your comment has been recorded, thank you',
     answerAlreadyExist: 'Sorry you already provided an answer for this question',
     answerReceived: 'Your answer has been updated, thank you',
-}
+    hello: 'Hello!',
+    bye: 'Bye!',
+    welcome: 'You\'re welcome!',
