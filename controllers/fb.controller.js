@@ -41,9 +41,9 @@ exports.receiveMessage = (req, res) => {
                         console.log(util.format("Received answer %s for question %s from member %s", answer, questionId, memberId));
                         answerCtrl.findAnswerByUser(questionId, memberId, function(answer) {
                             if (answer) {
-                                sendMessage(memberId, "Sorry you already provided an answer for this question");
+                                exports.sendMessage(memberId, "Sorry you already provided an answer for this question");
                             } else {
-                                answerCtrl.save(questionId, answer, memberId);
+                                answerCtrl.save(questionId, memberId, answer);
                                 questionCtrl.findById(questionId, function(question) {
                                     if (question && question.comment) {
                                         exports.sendMessage(memberId, "Your answer has been recorded, if you have any comment on the topic please let me know");

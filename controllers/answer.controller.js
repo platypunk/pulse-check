@@ -170,7 +170,6 @@ exports.findAnswer = (req, res) => {
                     message: 'Technical error.'
                 });
             });
-            console.log(answers);
         } else if (req.query.questionId) {
             if (req.query.count === 'true') {
                 console.log('Getting answers count by question...');

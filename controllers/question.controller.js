@@ -150,6 +150,40 @@ exports.delete = (req, res) => {
     });
 };
 
+exports.findQuestion = (req, res) => {
+    if(!req.query.userId) {
+        res.status(400).send({
+            success: false,
+            message: 'UserId is required'
+        });
+    } else {
+        if (req.query.userId) {
+            console.log('Getting questions by user...');
+            Question.find({
+                userId: req.query.userId
+            })
+            .then(questions => {
+                if(!questions) {
+                    res.status(404).send({
+                        message: 'Data not found with id ' + req.params.questionId
+                    });            
+                }
+                res.send(questions);
+            }).catch(err => {
+                if(err.kind === 'ObjectId') {
+                    res.status(404).send({
+                        message: 'Data not found'
+                    });               
+                }
+                console.log(err.message || 'Technical error.');
+                res.status(500).send({
+                    message: 'Technical error.'
+                });
+            });
+        } 
+    }
+};
+
 exports.getScheduled = (callback) => {
     console.log("Getting scheduled questions");
 

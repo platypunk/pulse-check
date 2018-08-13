@@ -10,4 +10,7 @@ module.exports = (app) => {
     app.put('/questions/:questionId', questions.update);
 
     app.delete('/questions/:questionId', questions.delete);
+
+    app.get('/question', questions.findQuestion);
+
 }
