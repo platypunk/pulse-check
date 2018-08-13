@@ -75,7 +75,7 @@ app.listen(3000,function(){
 });
 
 
-const Poller = require('./Poller');
+const Poller = require('./poller.js');
 let poller = new Poller(60000); 
 poller.onPoll(() => {
     poller.poll();
