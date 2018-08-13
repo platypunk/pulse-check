@@ -16,7 +16,8 @@ exports.create = (req, res) => {
             password: req.body.password,
             firstName: req.body.firstName,
             lastName: req.body.lastName,
-            isAdmin: req.body.isAdmin
+            isAdmin: req.body.isAdmin,
+            memberId: req.body.memberId
         });
         
         user.save()
@@ -44,7 +45,8 @@ exports.findAll = (req, res) => {
         firstName: 1,
         lastName: 1,
         isAdmin: 1,
-        deleted: 1
+        deleted: 1,
+        memberId: 1
     })
     .then(users => {
         res.status(200).send(users);
@@ -65,7 +67,8 @@ exports.findOne = (req, res) => {
         firstName: 1,
         lastName: 1,
         isAdmin: 1,
-        deleted: 1
+        deleted: 1,
+        memberId: 1
     })
     .then(user => {
         if(!user) {
@@ -107,6 +110,7 @@ exports.update = (req, res) => {
             if (req.body.firstName) user.firstName = req.body.firstName;
             if (req.body.lastName) user.lastName = req.body.lastName;
             if (req.body.isAdmin) user.isAdmin = req.body.isAdmin;
+            if (req.body.memberId) user.memberId = req.body.memberId;
             user.save(function(err) {
                 if(!err) {
                     res.status(200).send({
@@ -170,7 +174,8 @@ exports.findUser = (req, res) => {
         firstName: 1,
         lastName: 1,
         isAdmin: 1,
-        deleted: 1
+        deleted: 1,
+        memberId: 1
     })
     .then(user => {
         if(!user) {
@@ -203,7 +208,8 @@ exports.authenticate = (req, res) => {
         });
     } else {
         User.findOne({
-            username: req.body.username
+            username: req.body.username,
+            deleted: {$ne: null}
         })
         .then(user => {
             if(!user) {
@@ -226,7 +232,8 @@ exports.authenticate = (req, res) => {
                     firstName: user.firstName,
                     lastName: user.lastName,
                     isAdmin: user.isAdmin,
-                    deleted: user.deleted
+                    deleted: user.deleted,
+                    memberId: user.memberId
                 }
                 var token = jwt.sign(payload, req.app.get('superSecret'), {
                     expiresIn: jwtConfig.expiry

@@ -8,4 +8,8 @@ module.exports = {
     getGroups: 'community/groups?fields=id,name,privacy,archived,is_workplace_default&access_token=%s',
     getMembers: '%s/members?access_token=%s',
     getMember: '%s?fields=id,name,picture&access_token=%s',
+    // messages
+    answerReceived: 'Your answer has been recorded, thank you')
+    answerReceivedComment: 'Your answer has been recorded, if you have any comment on the topic please type it below',
+    answerAlreadyExist: 'Sorry you already provided an answer for this question',
 }

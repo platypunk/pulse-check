@@ -189,7 +189,8 @@ exports.getScheduled = (callback) => {
 
     Question.find({
         notified: {$ne: true},
-        schedule: {$lte: Date.now()}
+        schedule: {$lte: Date.now()},
+        deleted: {$ne: true}
     }).then(questions => {
         return callback(questions);
     }).catch(err => {

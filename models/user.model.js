@@ -6,7 +6,8 @@ const UserSchema = mongoose.Schema({
     firstName: String,
     lastName: String,
     isAdmin: Boolean,
-    deleted: Boolean
+    deleted: Boolean,
+   	memberId: String
 }, {
     timestamps: true
 });

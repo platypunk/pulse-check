@@ -3,6 +3,7 @@ const util = require('util');
 const fbConfig = require('../config/fb.config.js');
 const questionCtrl = require('../controllers/question.controller.js');
 const answerCtrl = require('../controllers/answer.controller.js');
+const messageCtrl = require('../controllers/message.controller.js');
 
 exports.verifyMessage = (req, res) => {
     console.log('Verifying message...');
@@ -41,19 +42,22 @@ exports.receiveMessage = (req, res) => {
                         console.log(util.format("Received answer %s for question %s from member %s", answer, questionId, memberId));
                         answerCtrl.findAnswerByUser(questionId, memberId, function(answer) {
                             if (answer) {
-                                exports.sendMessage(memberId, "Sorry you already provided an answer for this question");
+                                exports.sendMessage(memberId, fbConfig.answerAlreadyExist);
                             } else {
                                 answerCtrl.save(questionId, memberId, answer);
                                 questionCtrl.findById(questionId, function(question) {
                                     if (question && question.comment) {
-                                        exports.sendMessage(memberId, "Your answer has been recorded, if you have any comment on the topic please let me know");
+                                        exports.sendMessage(memberId, fbConfig.answerReceivedComment);
                                     } else {
-                                        exports.sendMessage(memberId, "Your answer has been recorded, thank you");
+                                        exports.sendMessage(memberId, fbConfig.answerReceived);
                                     }
                                 });
                                 
                             }
                         });
+                    } else if (message.message) {
+                        messageCtrl.save(message.sender.id, message.message.text);
+                        // answerCtrl.saveComment();
                     }
                     // comment
                     // hello
