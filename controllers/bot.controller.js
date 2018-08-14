@@ -33,7 +33,8 @@ bot.on('postback', (payload, chat) => {
     if (answerByUser) {
       console.log(`Bot chatting: ${fbConfig.answerAlreadyExist}`);
       const askUpdateAnswer = (convo) => {
-        convo.ask(fbConfig.answerAlreadyExist, (payload, convo) => {
+        try {
+          convo.ask(fbConfig.answerAlreadyExist, (payload, convo) => {
           if (payload.message && payload.message.text.toLowerCase() === 'yes') {
             answerCtrl.updateAnswer(convo.get('answerId'), convo.get('answerText'));
             chat.say(fbConfig.answerUpdated);
@@ -42,8 +43,12 @@ bot.on('postback', (payload, chat) => {
             chat.say(fbConfig.noUpdate);
             convo.end();
           }
-        });
-      };
+        } catch (err) {
+          console.log(err || "Technical error");
+          convo.end();
+        }
+      });
+    };
       chat.conversation((convo) => {
         convo.set('answerId', answerByUser._id);
         convo.set('answerText', answer);
@@ -53,8 +58,9 @@ bot.on('postback', (payload, chat) => {
       answerCtrl.save(questionId, memberId, answer, function(savedAnswer) {
         // comment
         questionCtrl.findById(questionId, function(question) {
-            if (question && question.comment) {
-              const askHaveComment = (convo) => {
+          if (question && question.comment) {
+            const askHaveComment = (convo) => {
+              try {
                 convo.ask(fbConfig.answerReceivedComment, (payload, convo) => {
                   if (payload.message && payload.message.text.toLowerCase() === 'yes') {
                     askComment(convo);
@@ -63,8 +69,13 @@ bot.on('postback', (payload, chat) => {
                     convo.end();
                   }
                 });
-              };
-              const askComment = (convo) => {
+              } catch (err) {
+                console.log(err || "Technical error");
+                convo.end();
+              }
+            };
+            const askComment = (convo) => {
+              try {
                 convo.ask(fbConfig.askComment, (payload, convo) => {
                   if (payload.message) {
                     const text = payload.message.text;
@@ -75,19 +86,23 @@ bot.on('postback', (payload, chat) => {
                     convo.end();
                   }
                 });
-              };
-              chat.conversation((convo) => {
-                convo.set('answerId', savedAnswer._id);
-                askHaveComment(convo);
-              });
-            } else {
-              console.log(`Bot chatting: ${fbConfig.answerReceived}`);
-              chat.say(fbConfig.answerReceived);
-            }
+              } catch (err) {
+                console.log(err || "Technical error");
+                convo.end();
+              }
+            };
+            chat.conversation((convo) => {
+              convo.set('answerId', savedAnswer._id);
+              askHaveComment(convo);
+            });
+          } else {
+            console.log(`Bot chatting: ${fbConfig.answerReceived}`);
+            chat.say(fbConfig.answerReceived);
+          }
         });
-      });      
-    }
-  });
+});      
+}
+});
 });
 
 bot.hear(['hello', 'hi', /hey( there)?/i], (payload, chat) => {
@@ -115,42 +130,42 @@ bot.hear(['help'], (payload, chat) => {
 });
 
 exports.receiveMessage = (req, res) => {
-    console.log('Receiving message...');
+  console.log('Receiving message...');
 
-    let body = req.body;
-    try {
-        if (body.object === 'page') {
-            body.entry.forEach(function(entry) {
-                if (entry.messaging) {
-                    let message = entry.messaging[0];
-                    console.log(message)
-                    bot.handleFacebookData(body);
-                }
-            });
+  let body = req.body;
+  try {
+    if (body.object === 'page') {
+      body.entry.forEach(function(entry) {
+        if (entry.messaging) {
+          let message = entry.messaging[0];
+          console.log(message)
+          bot.handleFacebookData(body);
         }
-    } catch (err) {
-        console.log(err || "Technical error");
+      });
     }
+  } catch (err) {
+    console.log(err || "Technical error");
+  }
 
-    res.status(200).send('EVENT_RECEIVED');
+  res.status(200).send('EVENT_RECEIVED');
 };
 
 exports.verifyMessage = (req, res) => {
-    console.log('Verifying message...');
-    let VERIFY_TOKEN = fbConfig.verifyToken;
-    
-    let mode = req.query['hub.mode'];
-    let token = req.query['hub.verify_token'];
-    let challenge = req.query['hub.challenge'];
-    
-    if (mode && token) {
-        if (mode === 'subscribe' && token === VERIFY_TOKEN) {
-            console.log('WEBHOOK_VERIFIED');
-            res.status(200).send(challenge);
-        } else {
-            res.sendStatus(403);      
-        }
+  console.log('Verifying message...');
+  let VERIFY_TOKEN = fbConfig.verifyToken;
+
+  let mode = req.query['hub.mode'];
+  let token = req.query['hub.verify_token'];
+  let challenge = req.query['hub.challenge'];
+
+  if (mode && token) {
+    if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+      console.log('WEBHOOK_VERIFIED');
+      res.status(200).send(challenge);
     } else {
-        res.sendStatus(400);
+      res.sendStatus(403);      
     }
+  } else {
+    res.sendStatus(400);
+  }
 };
