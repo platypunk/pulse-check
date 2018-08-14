@@ -124,7 +124,7 @@ bot.hear(['thanks', 'thank you'], (payload, chat) => {
 });
 
 bot.hear(['help'], (payload, chat) => {
-    log.info('Hello I am Pulsy, your digital sentiment stones.');
+    log.info('Bot chatting: Hello I am Pulsy, your digital sentiment stones.');
     chat.say('Hello I am Pulsy, your digital sentiment stones.', {typing: true});
     // chat.say('I will ask you pulse questions as they are scheduled.', {typing: true});
     // chat.say('You can update your answers by clicking on an old question\'s option.', {typing: true});
