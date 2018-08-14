@@ -8,6 +8,8 @@ module.exports = {
     getGroups: 'community/groups?fields=id,name,privacy,archived,is_workplace_default&access_token=%s',
     getMembers: '%s/members?access_token=%s',
     getMember: '%s?fields=id,name,picture&access_token=%s',
+    auth: 'oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s',
+    authRedirect: 'dummy',
     // messages
     answerReceived: 'Your answer has been recorded, thank you',
     answerReceivedComment: 'Your answer has been recorded, do you have any comments?',
@@ -18,4 +20,5 @@ module.exports = {
     answerReceived: 'Your answer has been updated, thank you',
     hello: 'Hello!',
     bye: 'Bye!',
-    welcome: 'You\'re welcome!',
+    welcome: 'You\'re welcome!'
+}

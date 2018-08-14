@@ -219,3 +219,31 @@ function sendMsg(jsonReq, callback) {
     );
 }
 
+
+exports.authenticate = (req, res) => {
+    console.log('Authenticating fb user...');
+
+    if(!req.body.code) {
+        res.status(400).send({
+            success: false,
+            message: 'Code is required'
+        });
+    } else {
+        request.get(
+            util.format(fbConfig.auth, fbConfig.appPageToken, 
+                fbConfig.authRedirect, fbConfig.appSecret, req.body.code),
+            function (err, response, body) {
+                if (err || response.statusCode != 200) {
+                    console.log(err ? err.message : 'Technical error.');
+                    res.status(500).send({
+                        success: false,
+                        message: 'Technical error.'
+                    });
+                } else {
+                    res.status(200).send(JSON.parse(body));
+                }
+            }
+        );
+    }
+};
+

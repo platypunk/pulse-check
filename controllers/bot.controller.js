@@ -116,8 +116,7 @@ bot.hear(['help'], (payload, chat) => {
   chat.say('Hello I am Pulsy, your digital sentiment stones.', {typing: true});
   // chat.say('I will ask you pulse questions as they are scheduled.', {typing: true});
   // chat.say('You can update your answers by clicking on an old question.', {typing: true});
-  // chat.say('If you want to ask a sentiment question, please access https://pulsecheck.tk');
-  );
+  // chat.say('If you want to ask a sentiment question, please access https://pulsecheck.tk')
 });
 
 exports.receiveMessage = (req, res) => {

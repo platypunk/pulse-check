@@ -35,6 +35,9 @@ app.use(function (req,res,next) {
 const users = require('./controllers/user.controller.js');
 router.post('/authenticate', users.authenticate);
 
+const fb = require('./controllers/fb.controller.js');
+router.post('/fb/auth', fb.authenticate);
+
 // JWT
 if (jwtConfig.enabled) {
   router.use(function (req, res, next) {
