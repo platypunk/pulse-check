@@ -37,10 +37,10 @@ bot.on('postback', (payload, chat) => {
           convo.ask(fbConfig.answerAlreadyExist, (payload, convo) => {
             if (payload.message && payload.message.text.toLowerCase() === 'yes') {
               answerCtrl.updateAnswer(convo.get('answerId'), convo.get('answerText'));
-              chat.say(fbConfig.answerUpdated);
+              chat.say(fbConfig.answerUpdated, {typing: true});
               convo.end();
             } else {
-              chat.say(fbConfig.noUpdate);
+              chat.say(fbConfig.noUpdate, {typing: true});
               convo.end();
             }
           }); 
@@ -65,7 +65,7 @@ bot.on('postback', (payload, chat) => {
                   if (payload.message && payload.message.text.toLowerCase() === 'yes') {
                     askComment(convo);
                   } else {
-                    chat.say(fbConfig.noUpdate);
+                    chat.say(fbConfig.noUpdate, {typing: true});
                     convo.end();
                   }
                 });
@@ -80,7 +80,7 @@ bot.on('postback', (payload, chat) => {
                   if (payload.message) {
                     const text = payload.message.text;
                     answerCtrl.saveComment(convo.get('answerId'), text);
-                    chat.say(fbConfig.commentReceived);
+                    chat.say(fbConfig.commentReceived, {typing: true});
                     convo.end();
                   } else {
                     convo.end();
@@ -97,7 +97,7 @@ bot.on('postback', (payload, chat) => {
             });
           } else {
             console.log(`Bot chatting: ${fbConfig.answerReceived}`);
-            chat.say(fbConfig.answerReceived);
+            chat.say(fbConfig.answerReceived, {typing: true});
           }
         });
 });      
@@ -107,18 +107,18 @@ bot.on('postback', (payload, chat) => {
 
 bot.hear(['hello', 'hi', /hey( there)?/i], (payload, chat) => {
   console.log(`Bot chatting: ${fbConfig.hello}`);
-  chat.say(fbConfig.hello);
+  chat.say(fbConfig.hello, {typing: true});
 });
 
 bot.hear([/(good)?bye/i, /see (ya|you)/i, 'adios'], (payload, chat) => {
   // Matches: goodbye, bye, see ya, see you, adios
   console.log(`Bot chatting: ${fbConfig.bye}`);
-  chat.say(fbConfig.bye);
+  chat.say(fbConfig.bye, {typing: true});
 });
 
 bot.hear(['thanks', 'thank you'], (payload, chat) => {
   console.log(`Bot chatting: ${fbConfig.welcome}`);
-  chat.say(fbConfig.welcome);
+  chat.say(fbConfig.welcome, {typing: true});
 });
 
 bot.hear(['help'], (payload, chat) => {
