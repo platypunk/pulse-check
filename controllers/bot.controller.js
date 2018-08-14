@@ -68,8 +68,7 @@ bot.on('postback', (payload, chat) => {
                 convo.ask(fbConfig.askComment, (payload, convo) => {
                   if (payload.message) {
                     const text = payload.message.text;
-                    console.log('AFTER ' + convo.get('answerId'));
-                    answerCtrl.saveComment(answerId, text);
+                    answerCtrl.saveComment(convo.get('answerId'), text);
                     chat.say(fbConfig.commentReceived);
                     convo.end();
                   } else {
@@ -79,7 +78,6 @@ bot.on('postback', (payload, chat) => {
               };
               chat.conversation((convo) => {
                 convo.set('answerId', savedAnswer._id);
-                console.log('BEFORE ' + convo.get('answerId'));
                 askHaveComment(convo);
               });
             } else {

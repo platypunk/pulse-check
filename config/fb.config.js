@@ -12,11 +12,11 @@ module.exports = {
     authRedirect: 'dummy',
     // messages
     answerReceived: 'Your answer has been recorded, thank you',
-    answerReceivedComment: 'Your answer has been recorded, do you have any comments?',
+    answerReceivedComment: 'Your answer has been recorded, do you have any comments? (Yes/No)',
     noUpdate: 'Thank you for your response',
     askComment: 'Please type your comment',
     commentReceived: 'Your comment has been recorded, thank you',
-    answerAlreadyExist: 'You already provided an answer for this question, do you want to update your answer?',
+    answerAlreadyExist: 'You already provided an answer for this question, do you want to update your answer? (Yes/No)',
     answerUpdated: 'Your answer has been updated, thank you',
     hello: 'Hello!',
     bye: 'Bye!',
