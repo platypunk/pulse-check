@@ -16,8 +16,8 @@ module.exports = {
     noUpdate: 'Thank you for your response',
     askComment: 'Please type your comment',
     commentReceived: 'Your comment has been recorded, thank you',
-    answerAlreadyExist: 'Sorry you already provided an answer for this question, do you want to update your answer?',
-    answerReceived: 'Your answer has been updated, thank you',
+    answerAlreadyExist: 'You already provided an answer for this question, do you want to update your answer?',
+    answerUpdated: 'Your answer has been updated, thank you',
     hello: 'Hello!',
     bye: 'Bye!',
     welcome: 'You\'re welcome!'
