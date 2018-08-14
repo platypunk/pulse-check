@@ -35,20 +35,20 @@ bot.on('postback', (payload, chat) => {
       const askUpdateAnswer = (convo) => {
         try {
           convo.ask(fbConfig.answerAlreadyExist, (payload, convo) => {
-          if (payload.message && payload.message.text.toLowerCase() === 'yes') {
-            answerCtrl.updateAnswer(convo.get('answerId'), convo.get('answerText'));
-            chat.say(fbConfig.answerUpdated);
-            convo.end();
-          } else {
-            chat.say(fbConfig.noUpdate);
-            convo.end();
-          }
+            if (payload.message && payload.message.text.toLowerCase() === 'yes') {
+              answerCtrl.updateAnswer(convo.get('answerId'), convo.get('answerText'));
+              chat.say(fbConfig.answerUpdated);
+              convo.end();
+            } else {
+              chat.say(fbConfig.noUpdate);
+              convo.end();
+            }
+          }); 
         } catch (err) {
           console.log(err || "Technical error");
           convo.end();
         }
-      });
-    };
+      };
       chat.conversation((convo) => {
         convo.set('answerId', answerByUser._id);
         convo.set('answerText', answer);
