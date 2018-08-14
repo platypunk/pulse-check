@@ -36,8 +36,7 @@ function getFbGroups(groups, url, res) {
                         if (!data.archived && !data.is_workplace_default) {
                             let group = {
                                 id: data.id,
-                                name: data.name,
-                                picture: data.picture
+                                name: data.name
                             };
                             groups.push(group);
                         }
@@ -111,6 +110,17 @@ exports.getMember = (req, res) => {
     let url = util.format(fbConfig.url + fbConfig.getMember, req.params.memberId, fbConfig.appPageToken);
     log.info(`GET request to ${url}`);
 
+    fbGet(url, res);
+};
+
+exports.getGroup = (req, res) => {
+    let url = util.format(fbConfig.url + fbConfig.getMember, req.params.groupId, fbConfig.appPageToken);
+    log.info(`GET request to ${url}`);
+
+    fbGet(url, res);
+};
+
+function fbGet(url, res) {
     request.get(
         url,
         function (err, response, body) {
@@ -124,7 +134,7 @@ exports.getMember = (req, res) => {
             res.status(200).send(JSON.parse(body));
         }
     );
-};
+}
 
 exports.sendQuestionNow = (req, res) => {
     log.info('Sending question now...');

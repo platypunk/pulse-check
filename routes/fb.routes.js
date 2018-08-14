@@ -3,6 +3,8 @@ module.exports = (app) => {
 
     app.get('/fb/groups', fb.getGroups);
 
+	app.get('/fb/group/:groupId', fb.getGroup);
+
     app.get('/fb/members/:groupId', fb.reqMembers);
 
     app.get('/fb/member/:memberId', fb.getMember);
