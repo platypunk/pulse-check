@@ -281,7 +281,7 @@ exports.findAnswer = (req, res) => {
 exports.findAnswerByUser = (questionId, userId, callback) => {
     console.log('Finding answer by user...');
 
-    Answer.find({
+    Answer.findOne({
         questionId: questionId,
         userId: userId
     })
