@@ -223,7 +223,7 @@ exports.findAnswer = (req, res) => {
                             let times = [];
                             let sum = 0, count = 0;
                             answers.forEach(function(answer) {
-                                let diff = answer.updatedAt - question.schedule;
+                                let diff = answer.updatedAt - question.updatedAt;
                                 time = {
                                     userId: answer.userId,
                                     time: diff

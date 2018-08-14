@@ -36,7 +36,8 @@ function getFbGroups(groups, url, res) {
                         if (!data.archived && !data.is_workplace_default) {
                             let group = {
                                 id: data.id,
-                                name: data.name
+                                name: data.name,
+                                picture: data.picture
                             };
                             groups.push(group);
                         }
