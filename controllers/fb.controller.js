@@ -1,3 +1,6 @@
+const Log = require('log');
+const log = new Log('info');
+
 const request = require('request');
 const util = require('util');
 const fbConfig = require('../config/fb.config.js');
@@ -5,7 +8,7 @@ const questionCtrl = require('../controllers/question.controller.js');
 
 
 exports.getGroups = (req, res) => {
-    console.log('Getting groups...');
+    log.info('Getting groups...');
 
     var groups = [];
     getFbGroups(groups, 
@@ -14,12 +17,12 @@ exports.getGroups = (req, res) => {
 };
 
 function getFbGroups(groups, url, res) {
-    console.log("GET request to " + url);
+    log.info(`GET request to ${url}`);
     request.get(
         url,
         function (err, response, body) {
             if (err || response.statusCode != 200) {
-                console.log(err ? err.message : 'Technical error.');
+                log.info(err ? err.message : 'Technical error.');
                 res.status(500).send({
                     success: false,
                     message: 'Technical error.'
@@ -50,7 +53,7 @@ function getFbGroups(groups, url, res) {
 }
 
 exports.reqMembers = (req, res) => {
-    console.log('Requesting members...');
+    log.info('Requesting members...');
 
     var members = [];
     getFbMembers(members, 
@@ -63,7 +66,7 @@ exports.reqMembers = (req, res) => {
 };
 
 exports.getMembers = (groupId, callback) => {
-    console.log('Getting members...');
+    log.info(`Getting members for group ${groupId}...`);
 
     var members = [];
     getFbMembers(members, 
@@ -74,12 +77,12 @@ exports.getMembers = (groupId, callback) => {
 };
 
 function getFbMembers(members, url, callback) {
-    console.log("GET request to " + url);
+    log.info(`GET request to ${url}`);
     request.get(
         url,
         function (err, response, body) {
             if (err || response.statusCode != 200) {
-                console.log(err ? err.message : 'Technical error.');
+                log.info(err ? err.message : 'Technical error.');
                 return callback([]);
             }
             else {
@@ -105,13 +108,13 @@ function getFbMembers(members, url, callback) {
 
 exports.getMember = (req, res) => {
     let url = util.format(fbConfig.url + fbConfig.getMember, req.params.memberId, fbConfig.appPageToken);
-    console.log("GET request to " + url);
+    log.info(`GET request to ${url}`);
 
     request.get(
         url,
         function (err, response, body) {
             if (err || response.statusCode != 200) {
-                console.log(err ? err.message : 'Technical error.');
+                log.info(err ? err.message : 'Technical error.');
                 res.status(500).send({
                     success: false,
                     message: 'Technical error.'
@@ -123,18 +126,18 @@ exports.getMember = (req, res) => {
 };
 
 exports.sendQuestionNow = (req, res) => {
-    console.log('Sending question now...');
+    log.info('Sending question now...');
 
     questionCtrl.findById(req.params.questionId, function(question) {
         exports.getMembers(question.groupId, function(members) {
             if (members) {
-                console.log("Sending to members now\n" + JSON.stringify(members));
+                log.info("Sending to members now\n" + JSON.stringify(members));
                 members.forEach(function(member) {
                     exports.sendQuestion(member.id, 
                         question,
                         function(res) {
                             if (res) {
-                                console.log("Send response\n" + JSON.stringify(res));
+                                log.info("Send response\n" + JSON.stringify(res));
                                 questionCtrl.updateNotified(question._id);
                             }
                         });
@@ -148,7 +151,7 @@ exports.sendQuestionNow = (req, res) => {
 };
 
 exports.sendQuestion = (memberId, question, callback) => {
-    console.log('Sending question...');
+    log.info(`Sending question ${question._id} to ${memberId}...`);
 
     let buttons = [];
     question.options.forEach(function(option) {
@@ -183,7 +186,7 @@ exports.sendQuestion = (memberId, question, callback) => {
 };
 
 exports.sendMessage = (memberId, message) => {
-    console.log('Sending message...');
+    log.info(`Sending message ${message} to ${memberId}...`);
 
     jsonReq = 
     {
@@ -196,20 +199,20 @@ exports.sendMessage = (memberId, message) => {
     };
 
     sendMsg(jsonReq, function(res) {
-        console.log("Send response\n" + res);
+        log.info(`Send response\n ${res}`);
     });
 };
 
 function sendMsg(jsonReq, callback) {
     let url = fbConfig.url + util.format(fbConfig.sendMessage, fbConfig.appPageToken);
-    console.log("POST request to " + url);
+    log.info(`POST request to ${url}`);
 
     request.post(
         url,
         {json: jsonReq},
         function (err, response, body) {
             if (err || response.statusCode != 200) {
-                console.log(err? err.message : 'Technical error.');
+                log.info(err? err.message : 'Technical error.');
                 return callback([]);
             }
             else {
@@ -221,7 +224,7 @@ function sendMsg(jsonReq, callback) {
 
 
 exports.authenticate = (req, res) => {
-    console.log('Authenticating fb user...');
+    log.info('Authenticating fb user...');
 
     if(!req.body.code) {
         res.status(400).send({
@@ -234,7 +237,7 @@ exports.authenticate = (req, res) => {
                 fbConfig.authRedirect, fbConfig.appSecret, req.body.code),
             function (err, response, body) {
                 if (err || response.statusCode != 200) {
-                    console.log(err ? err.message : 'Technical error.');
+                    log.info(err ? err.message : 'Technical error.');
                     res.status(500).send({
                         success: false,
                         message: 'Technical error.'

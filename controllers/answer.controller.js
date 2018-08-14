@@ -1,8 +1,11 @@
+const Log = require('log');
+const log = new Log('info');
+
 const Answer = require('../models/answer.model.js');
 const questionCtrl = require('./question.controller.js');
 
 exports.create = (req, res) => {
-    console.log('Saving answer...');
+    log.info('Saving answer...');
     
     if(!req.body.questionId || !req.body.userId || !req.body.answer) {
         res.status(400).send({
@@ -23,7 +26,7 @@ exports.create = (req, res) => {
                 success: true
             });
         }).catch(err => {
-            console.log(err.message || 'Technical error.');
+            log.info(err.message || 'Technical error.');
             res.status(500).send({
                 success: false,
                 message: 'Technical error.'
@@ -34,13 +37,13 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    console.log('Getting answers...');
+    log.info('Getting answers...');
 
     Answer.find()
     .then(answers => {
         res.status(200).send(answers);
     }).catch(err => {
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
         res.status(500).send({
             message: 'Technical error.'
         });
@@ -48,31 +51,31 @@ exports.findAll = (req, res) => {
 };
 
 exports.findOne = (req, res) => {
-    console.log('Getting answer...');
+    log.info('Getting answer...');
 
     Answer.findById(req.params.answerId)
     .then(answer => {
         if(!answer) {
             res.status(404).send({
-                message: 'Data not found with id ' + req.params.answerId
+                message: `Data not found with id ${req.params.answerId}`
             });            
         }
         res.send(answer);
     }).catch(err => {
         if(err.kind === 'ObjectId') {
             res.status(404).send({
-                message: 'Data not found with id ' + req.params.answerId
+                message: `Data not found with id ${req.params.answerId}`
             });                
         }
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
         res.status(500).send({
-            message: 'Error retrieving data with id ' + req.params.answerId
+            message: `Error retrieving data with id ${req.params.answerId}`
         });
     });
 };
 
 exports.update = (req, res) => {
-    console.log('Updating answer...');
+    log.info('Updating answer...');
 
     if(!req.params.answerId) {
         res.status(400).send({
@@ -84,7 +87,7 @@ exports.update = (req, res) => {
         .then(answer => {
             if(!answer) {
                 answer.status(404).send({
-                    message: 'Data not found with id ' + req.params.answerId
+                    message: `Data not found with id ${req.params.answerId}`
                 });            
             }
             if (req.body.answer) answer.answer = req.body.answer;
@@ -95,7 +98,7 @@ exports.update = (req, res) => {
                         success: true
                     });
                 } else {
-                    console.log(err.message || 'Technical error.');
+                    log.info(err.message || 'Technical error.');
                     res.status(500).send({
                         message: 'Technical error.'
                     });
@@ -104,10 +107,10 @@ exports.update = (req, res) => {
         }).catch(err => {
             if(err.kind === 'ObjectId') {
                 res.status(404).send({
-                    message: 'Data not found with id ' + req.params.answerId
+                    message: `Data not found with id ${req.params.answerId}`
                 });                
             }
-            console.log(err.message || 'Technical error.');
+            log.info(err.message || 'Technical error.');
             res.status(500).send({
                 message: 'Technical error.'
             });
@@ -122,7 +125,7 @@ exports.delete = (req, res) => {
     .then(answer => {
         if(!answer) {
             res.status(404).send({
-                message: 'Data not found with id ' + req.params.answerId
+                message: `Data not found with id ${req.params.answerId}`
             });
         }
         res.status(200).send({
@@ -131,10 +134,10 @@ exports.delete = (req, res) => {
     }).catch(err => {
         if(err.kind === 'ObjectId' || err.name === 'NotFound') {
             res.status(404).send({
-                message: 'Data not found with id ' + req.params.answerId
+                message: `Data not found with id ${req.params.answerId}`
             });                
         }
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
         res.status(500).send({
             message: 'Technical error.'
         });
@@ -149,14 +152,14 @@ exports.findAnswer = (req, res) => {
         });
     } else {
         if (req.query.userId) {
-            console.log('Getting answers by user...');
+            log.info('Getting answers by user...');
             Answer.find({
                 userId: req.query.userId
             })
             .then(answers => {
                 if(!answers) {
                     res.status(404).send({
-                        message: 'Data not found with id ' + req.params.questionId
+                        message: `Data not found with id ${req.params.questionId}`
                     });            
                 }
                 res.send(answers);
@@ -166,30 +169,30 @@ exports.findAnswer = (req, res) => {
                         message: 'Data not found'
                     });               
                 }
-                console.log(err.message || 'Technical error.');
+                log.info(err.message || 'Technical error.');
                 res.status(500).send({
                     message: 'Technical error.'
                 });
             });
         } else if (req.query.questionId) {
             if (req.query.count === 'true') {
-                console.log('Getting answers count by question...');
+                log.info('Getting answers count by question...');
                 const aggregatorOpts = [{
-                        $match: {
-                            questionId: req.query.questionId
-                        }
-                    },{
-                        $group: {
-                            _id: "$answer",
-                            count: { $sum: 1 }
-                        }
+                    $match: {
+                        questionId: req.query.questionId
                     }
+                },{
+                    $group: {
+                        _id: "$answer",
+                        count: { $sum: 1 }
+                    }
+                }
                 ]
                 Answer.aggregate(aggregatorOpts).exec()
                 .then(answers => {
                     if(!answers) {
                         res.status(404).send({
-                            message: 'Data not found with id ' + req.params.questionId
+                            message: `Data not found with id ${req.params.questionId}`
                         });            
                     }
                     res.send(answers);
@@ -199,7 +202,7 @@ exports.findAnswer = (req, res) => {
                             message: 'Data not found'
                         });
                     }
-                    console.log(err.message || 'Technical error.');
+                    log.info(err.message || 'Technical error.');
                     res.status(500).send({
                         message: 'Technical error.'
                     });
@@ -214,7 +217,7 @@ exports.findAnswer = (req, res) => {
                         .then(answers => {
                             if(!answers) {
                                 res.status(404).send({
-                                    message: 'Data not found with id ' + req.params.questionId
+                                    message: `Data not found with id ${req.params.questionId}`
                                 });            
                             }
                             let times = [];
@@ -239,47 +242,47 @@ exports.findAnswer = (req, res) => {
                                     message: 'Data not found'
                                 });
                             }
-                            console.log(err.message || 'Technical error.');
+                            log.info(err.message || 'Technical error.');
                             res.status(500).send({
                                 message: 'Technical error.'
                             });
                         });
                     } else {
                         res.status(404).send({
-                            message: 'Data not found with id ' + req.params.questionId
+                            message: `Data not found with id ${req.params.questionId}`
                         });
                     }
                 });
-            } else {
-                console.log('Getting answers by question...');
-                Answer.find({
-                    questionId: req.query.questionId
-                })
-                .then(answers => {
-                    if(!answers) {
-                        res.status(404).send({
-                            message: 'Data not found with id ' + req.params.questionId
-                        });            
-                    }
-                    res.send(answers);
-                }).catch(err => {
-                    if(err.kind === 'ObjectId') {
-                        res.status(404).send({
-                            message: 'Data not found'
-                        });
-                    }
-                    console.log(err.message || 'Technical error.');
-                    res.status(500).send({
-                        message: 'Technical error.'
-                    });
-                });
-            }
+} else {
+    log.info('Getting answers by question...');
+    Answer.find({
+        questionId: req.query.questionId
+    })
+    .then(answers => {
+        if(!answers) {
+            res.status(404).send({
+                message: `Data not found with id ${req.params.questionId}`
+            });            
         }
-    }
+        res.send(answers);
+    }).catch(err => {
+        if(err.kind === 'ObjectId') {
+            res.status(404).send({
+                message: 'Data not found'
+            });
+        }
+        log.info(err.message || 'Technical error.');
+        res.status(500).send({
+            message: 'Technical error.'
+        });
+    });
+}
+}
+}
 };
 
 exports.findAnswerByUser = (questionId, userId, callback) => {
-    console.log('Finding answer by user...');
+    log.info(`Finding answer for question ${questionId} by user ${userId}...`);
 
     Answer.findOne({
         questionId: questionId,
@@ -288,12 +291,12 @@ exports.findAnswerByUser = (questionId, userId, callback) => {
     .then(answer => {
         return callback(answer);
     }).catch(err => {
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
     });
 };
 
 exports.save = (questionId, userId, answer, callback) => {
-    console.log('Saving answer...');
+    log.info(`Saving answer for question ${questionId} by user ${userId}...`);
     
     const ans = new Answer({
         questionId: questionId,
@@ -305,26 +308,26 @@ exports.save = (questionId, userId, answer, callback) => {
     .then(data => {
         return callback(data);
     }).catch(err => {
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
     });
 };
 
 exports.saveComment = (answerId, comment) => {
-    console.log(`Updating comment for ${answerId}`);
+    log.info(`Updating comment for ${answerId}...`);
 
     Answer.findByIdAndUpdate(answerId, {
         comment: comment
     }).catch(err => {
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
     });
 };
 
 exports.updateAnswer = (answerId, answer) => {
-    console.log('Updating answer text...');
+    log.info(`Updating answer for ${answerId}...`);
 
     Answer.findByIdAndUpdate(answerId, {
         answer: answer
     }).catch(err => {
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
     });
 };

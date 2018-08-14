@@ -1,10 +1,13 @@
+const Log = require('log');
+const log = new Log('info');
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 
-const dbConfig = require('./config/database.config.js');
+const appConfig = require('./config/app.config.js');
 const jwtConfig = require('./config/jwt.config.js');
 
 const app = express();
@@ -18,55 +21,55 @@ app.use(cors());
 // Configuring the database
 mongoose.Promise = global.Promise;
 // Connecting to the database
-mongoose.connect(dbConfig.url, { useNewUrlParser: true })
+mongoose.connect(appConfig.dbUrl, { useNewUrlParser: true })
 .then(() => {
-  console.log('Successfully connected to the database');    
+    log.info('Successfully connected to the database');        
 }).catch(err => {
-  console.log('Could not connect to the database. Exiting now...');
-  process.exit();
+    log.info('Could not connect to the database. Exiting now...');
+    process.exit();
 });
 
 // Routes
 app.use(function (req,res,next) {
-  console.log(`${req.method} request for '${req.url}' - ${JSON.stringify(req.body)}`);
-  next();
+    log.info(`${req.method} request for '${req.url}' - ${JSON.stringify(req.body)}`);
+    next();
 });
 
 const users = require('./controllers/user.controller.js');
 router.post('/authenticate', users.authenticate);
 
 const fb = require('./controllers/fb.controller.js');
-router.post('/fb/auth', fb.authenticate);
+router.post('/fb/authenticate', fb.authenticate);
 
 // JWT
 if (jwtConfig.enabled) {
-  router.use(function (req, res, next) {
-    var token = req.body.token || req.query.token || req.headers['x-access-token'];
-    if (token) {
-      jwt.verify(token, app.get('superSecret'), function(err, decoded) {      
-        if (err) {
-          return res.status(403).send({ 
-            success: false, 
-            message: 'Failed to authenticate token.'
-          });
+    router.use(function (req, res, next) {
+        var token = req.body.token || req.query.token || req.headers['x-access-token'];
+        if (token) {
+            jwt.verify(token, app.get('superSecret'), function(err, decoded) {            
+                if (err) {
+                    return res.status(403).send({ 
+                        success: false, 
+                        message: 'Failed to authenticate token.'
+                    });
+                } else {
+                    req.decoded = decoded;        
+                    next();
+                }
+            });
         } else {
-          req.decoded = decoded;    
-          next();
+            return res.status(403).send({ 
+                success: false, 
+                message: 'No token provided.'
+            });
         }
-      });
-    } else {
-      return res.status(403).send({ 
-        success: false, 
-        message: 'No token provided.'
-      });
-    }
-  });
+    });
 }
 
 // exclude webhook from jwt
 require('./routes/bot.routes.js')(app);
 
-app.use('/',router);
+app.use('/', router);
 
 require('./routes/fb.routes.js')(app);
 require('./routes/question.routes.js')(app);
@@ -74,13 +77,13 @@ require('./routes/answer.routes.js')(app);
 require('./routes/user.routes.js')(app);
 
 
-app.listen(3000,function(){
-  console.log('Live at Port 3000');
+app.listen(appConfig.port, function(){
+    log.info(`Live at Port ${appConfig.port}`);
 });
 
 
 const Poller = require('./poller.js');
-let poller = new Poller(60000); 
+let poller = new Poller(appConfig.pollerTimeout); 
 poller.onPoll(() => {
     poller.poll();
 });

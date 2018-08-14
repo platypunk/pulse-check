@@ -1,7 +1,10 @@
+const Log = require('log');
+const log = new Log('info');
+
 const Message = require('../models/message.model.js');
 
 exports.save = (sender, message) => {
-    console.log('Saving message...');
+    log.info(`Saving message ${message} from ${sender}...`);
     
     const msg = new Message({
         sender: sender,
@@ -10,6 +13,6 @@ exports.save = (sender, message) => {
     
     msg.save()
     .catch(err => {
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
     });
 };

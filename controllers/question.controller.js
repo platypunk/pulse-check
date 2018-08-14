@@ -1,7 +1,10 @@
+const Log = require('log');
+const log = new Log('info');
+
 const Question = require('../models/question.model.js');
 
 exports.create = (req, res) => {
-    console.log('Saving question...');
+    log.info('Saving question...');
     
     if(!req.body.question || !req.body.options || req.body.options.length < 2 ||
         !req.body.schedule || !req.body.userId || !req.body.groupId) {
@@ -24,7 +27,7 @@ exports.create = (req, res) => {
         .then(data => {
             res.status(200).send(data);
         }).catch(err => {
-            console.log(err.message || 'Technical error.');
+            log.info(err.message || 'Technical error.');
             res.status(500).send({
                 success: false,
                 message: 'Technical error.'
@@ -35,13 +38,13 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    console.log('Getting questions...');
+    log.info('Getting questions...');
 
 	Question.find()
     .then(questions => {
         res.status(200).send(questions);
     }).catch(err => {
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
         res.status(500).send({
             message: 'Technical error.'
         });
@@ -49,23 +52,23 @@ exports.findAll = (req, res) => {
 };
 
 exports.findOne = (req, res) => {
-    console.log('Getting question...');
+    log.info('Getting question...');
 
 	Question.findById(req.params.questionId)
     .then(question => {
         if(!question) {
             res.status(404).send({
-                message: 'Data not found with id ' + req.params.questionId
+                message: `Data not found with id ${req.params.questionId}`
             });            
         }
         res.send(question);
     }).catch(err => {
         if(err.kind === 'ObjectId') {
             res.status(404).send({
-                message: 'Data not found with id ' + req.params.questionId
+                message: `Data not found with id ${req.params.questionId}`
             });                
         }
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
         res.status(500).send({
             message: 'Technical error.'
         });
@@ -73,7 +76,7 @@ exports.findOne = (req, res) => {
 };
 
 exports.update = (req, res) => {
-    console.log('Updating question...');
+    log.info('Updating question...');
 
     if(!req.params.questionId) {
         res.status(400).send({
@@ -85,7 +88,7 @@ exports.update = (req, res) => {
         .then(question => {
             if(!question) {
                 question.status(404).send({
-                    message: 'Data not found with id ' + req.params.questionId
+                    message: `Data not found with id ${req.params.questionId}`
                 });            
             }
             if (req.body.question) question.question = req.body.question;
@@ -100,7 +103,7 @@ exports.update = (req, res) => {
                         success: true
                     });
                 } else {
-                    console.log(err.message || 'Technical error.');
+                    log.info(err.message || 'Technical error.');
                     res.status(500).send({
                         message: 'Technical error.'
                     });
@@ -109,10 +112,10 @@ exports.update = (req, res) => {
         }).catch(err => {
             if(err.kind === 'ObjectId') {
                 res.status(404).send({
-                    message: 'Data not found with id ' + req.params.questionId
+                    message: `Data not found with id ${req.params.questionId}`
                 });                
             }
-            console.log(err.message || 'Technical error.');
+            log.info(err.message || 'Technical error.');
             res.status(500).send({
                 message: 'Technical error.'
             });
@@ -121,7 +124,7 @@ exports.update = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-    console.log("Deleting question");
+    log.info("Deleting question");
     
 	Question.findByIdAndUpdate(req.params.questionId, {
             deleted: true
@@ -129,7 +132,7 @@ exports.delete = (req, res) => {
     .then(question => {
         if(!question) {
             res.status(404).send({
-                message: 'Data not found with id ' + req.params.questionId
+                message: `Data not found with id ${req.params.questionId}`
             });
         }
         res.status(200).send({
@@ -138,10 +141,10 @@ exports.delete = (req, res) => {
     }).catch(err => {
         if(err.kind === 'ObjectId' || err.name === 'NotFound') {
             res.status(404).send({
-                message: 'Data not found with id ' + req.params.questionId
+                message: `Data not found with id ${req.params.questionId}`
             });                
         }
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
         res.status(500).send({
             message: 'Technical error.'
         });
@@ -156,14 +159,14 @@ exports.findQuestion = (req, res) => {
         });
     } else {
         if (req.query.userId) {
-            console.log('Getting questions by user...');
+            log.info('Getting questions by user...');
             Question.find({
                 userId: req.query.userId
             })
             .then(questions => {
                 if(!questions) {
                     res.status(404).send({
-                        message: 'Data not found with id ' + req.params.questionId
+                        message: `Data not found with id ${req.params.questionId}`
                     });            
                 }
                 res.send(questions);
@@ -173,7 +176,7 @@ exports.findQuestion = (req, res) => {
                         message: 'Data not found'
                     });               
                 }
-                console.log(err.message || 'Technical error.');
+                log.info(err.message || 'Technical error.');
                 res.status(500).send({
                     message: 'Technical error.'
                 });
@@ -183,7 +186,7 @@ exports.findQuestion = (req, res) => {
 };
 
 exports.getScheduled = (callback) => {
-    console.log("Getting scheduled questions");
+    log.info("Getting scheduled questions");
 
     Question.find({
         notified: {$ne: true},
@@ -192,29 +195,29 @@ exports.getScheduled = (callback) => {
     }).then(questions => {
         return callback(questions);
     }).catch(err => {
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
         return callback([]);
     });
 }
 
 exports.updateNotified = (questionId) => {
-    console.log('Updating scheduled question...');
+    log.info(`Updating scheduled question ${questionId}...`);
 
     Question.findByIdAndUpdate(questionId, {
         notified: true
     }).catch(err => {
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
     });
 };
 
 exports.findById = (questionId, callback) => {
-    console.log('Getting question by id...');
+    log.info(`Getting question by id ${questionId}...`);
 
     Question.findById(questionId)
     .then(question => {
         return callback(question);
     }).catch(err => {
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
         return callback(null);
     });
 };

@@ -1,9 +1,12 @@
+const Log = require('log');
+const log = new Log('info');
+
 const jwt = require('jsonwebtoken');
 const jwtConfig = require('../config/jwt.config.js');
 const User = require('../models/user.model.js');
 
 exports.create = (req, res) => {
-    console.log('Saving user...');
+    log.info('Saving user...');
     
     if(!req.body.username || !req.body.password) {
         res.status(400).send({
@@ -26,7 +29,7 @@ exports.create = (req, res) => {
                 success: true
             });
         }).catch(err => {
-            console.log(err.message || 'Technical error.');
+            log.info(err.message || 'Technical error.');
             res.status(500).send({
                 success: false,
                 message: 'Technical error.'
@@ -37,7 +40,7 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    console.log('Getting users...');
+    log.info('Getting users...');
 
     User.find({}, {
         _id: 1,
@@ -51,7 +54,7 @@ exports.findAll = (req, res) => {
     .then(users => {
         res.status(200).send(users);
     }).catch(err => {
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
         res.status(500).send({
             message: 'Technical error.'
         });
@@ -59,7 +62,7 @@ exports.findAll = (req, res) => {
 };
 
 exports.findOne = (req, res) => {
-    console.log('Getting user...');
+    log.info('Getting user...');
 
     User.findById(req.params.userId,{
         _id: 1,
@@ -73,17 +76,17 @@ exports.findOne = (req, res) => {
     .then(user => {
         if(!user) {
             res.status(404).send({
-                message: 'Data not found with id ' + req.params.userId
+                message: `Data not found with id ${req.params.userId}`
             });            
         }
         res.send(user);
     }).catch(err => {
         if(err.kind === 'ObjectId') {
             res.status(404).send({
-                message: 'Data not found with id ' + req.params.userId
+                message: `Data not found with id ${req.params.userId}`
             });                
         }
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
         res.status(500).send({
             message: 'Technical error.'
         });
@@ -91,7 +94,7 @@ exports.findOne = (req, res) => {
 };
 
 exports.update = (req, res) => {
-    console.log('Updating user...');
+    log.info('Updating user...');
 
     if(!req.params.userId) {
         res.status(400).send({
@@ -103,7 +106,7 @@ exports.update = (req, res) => {
         .then(user => {
             if(!user) {
                 res.status(404).send({
-                    message: 'Data not found with id ' + req.params.userId
+                    message: `Data not found with id ${req.params.userId}`
                 });            
             }
             if (req.body.password) user.password = req.body.password;
@@ -117,7 +120,7 @@ exports.update = (req, res) => {
                         success: true
                     });
                 } else {
-                    console.log(err.message || 'Technical error.');
+                    log.info(err.message || 'Technical error.');
                     res.status(500).send({
                         message: 'Technical error.'
                     });
@@ -126,10 +129,10 @@ exports.update = (req, res) => {
         }).catch(err => {
             if(err.kind === 'ObjectId') {
                 res.status(404).send({
-                    message: 'Data not found with id ' + req.params.userId
+                    message: `Data not found with id ${req.params.userId}`
                 });                
             }
-            console.log(err.message || 'Technical error.');
+            log.info(err.message || 'Technical error.');
             res.status(500).send({
                 message: 'Technical error.'
             });
@@ -144,7 +147,7 @@ exports.delete = (req, res) => {
     .then(user => {
         if(!user) {
             res.status(404).send({
-                message: 'Data not found with id ' + req.params.userId
+                message: `Data not found with id ${req.params.userId}`
             });
         }
         res.status(200).send({
@@ -153,10 +156,10 @@ exports.delete = (req, res) => {
     }).catch(err => {
         if(err.kind === 'ObjectId' || err.name === 'NotFound') {
             res.status(404).send({
-                message: 'Data not found with id ' + req.params.userId
+                message: `Data not found with id ${req.params.userId}`
             });                
         }
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
         res.status(500).send({
             message: 'Technical error.'
         });
@@ -164,7 +167,7 @@ exports.delete = (req, res) => {
 };
 
 exports.findUser = (req, res) => {
-    console.log('Getting user...');
+    log.info('Getting user...');
 
     User.findOne({
         username: req.query.username
@@ -180,17 +183,17 @@ exports.findUser = (req, res) => {
     .then(user => {
         if(!user) {
             res.status(404).send({
-                message: 'Data not found with id ' + req.params.userId
+                message: `Data not found with id ${req.params.userId}`
             });            
         }
         res.send(user);
     }).catch(err => {
         if(err.kind === 'ObjectId') {
             res.status(404).send({
-                message: 'Data not found with id ' + req.params.userId
+                message: `Data not found with id ${req.params.userId}`
             });                
         }
-        console.log(err.message || 'Technical error.');
+        log.info(err.message || 'Technical error.');
         res.status(500).send({
             message: 'Technical error.'
         });
@@ -198,10 +201,10 @@ exports.findUser = (req, res) => {
 };
 
 exports.authenticate = (req, res) => {
-    console.log('Authenticating user...');
+    log.info('Authenticating user...');
 
     if(!req.body.username || !req.body.password) {
-        console.log('Username and password is required.');
+        log.info('Username and password is required.');
         res.status(404).send({ 
             success: false, 
             message: 'Authentication failed.' 
@@ -213,13 +216,13 @@ exports.authenticate = (req, res) => {
         })
         .then(user => {
             if(!user) {
-                console.log('Username or password is incorrect.');
+                log.info('Username or password is incorrect.');
                 res.status(400).send({ 
                     success: false, 
                     message: 'Authentication failed.' 
                 });
             } else if (user.password != req.body.password) {
-                console.log('Username or password is incorrect.');
+                log.info('Username or password is incorrect.');
                 res.status(400).send({ 
                     success: false, 
                     message: 'Authentication failed.' 
@@ -244,7 +247,7 @@ exports.authenticate = (req, res) => {
                 });
             }
         }).catch(err => {
-            console.log(err.message || 'Technical error.');
+            log.info(err.message || 'Technical error.');
             res.status(500).send({
                 success: false,
                 message: 'Technical error.'
