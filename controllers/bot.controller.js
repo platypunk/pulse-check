@@ -135,8 +135,7 @@ bot.hear(['help', 'info', 'test', 'how to'], (payload, chat) => {
                         buttons: [
                             { type: 'postback', title: 'Responding to questions', payload: 'RESPONDING_TO_QUESTIONS' },
                             { type: 'postback', title: 'Updating answers', payload: 'UPDATING_ANSWERS' },
-                            { type: 'postback', title: 'Asking questions', payload: 'ASKING_QUESTIONS' },
-                            { type: 'postback', title: 'Contact us', payload: 'CONTACT_US' }
+                            { type: 'postback', title: 'Asking questions', payload: 'ASKING_QUESTIONS' }
                         ]
                     });
                 } else {
@@ -169,11 +168,6 @@ bot.on('postback:UPDATING_ANSWERS', (payload, chat) => {
 bot.on('postback:ASKING_QUESTIONS', (payload, chat) => {
     log.info(`Bot chatting: ${fbConfig.moreHelp3}`);
     chat.say(fbConfig.moreHelp3, {typing: true});
-});
-
-bot.on('postback:CONTACT_US', (payload, chat) => {
-    log.info(`Bot chatting: ${fbConfig.moreHelp4}`);
-    chat.say(fbConfig.moreHelp4, {typing: true});
 });
 
 exports.receiveMessage = (req, res) => {
