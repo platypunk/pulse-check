@@ -102,9 +102,9 @@ bot.on('postback', (payload, chat) => {
                         chat.say(fbConfig.answerReceived, {typing: true});
                     }
                 });
-});            
-}
-});
+            });            
+        }
+    });
 });
 
 bot.hear(['hello', 'hi', /hey( there)?/i], (payload, chat) => {
@@ -125,49 +125,7 @@ bot.hear(['thanks', 'thank you'], (payload, chat) => {
 
 bot.hear(['help', 'info', 'test', 'how to'], (payload, chat) => {
     log.info('Bot chatting: help...');
-    const askMoreHelp = (convo) => {
-        try {
-            convo.ask(fbConfig.moreHelp, (payload, convo) => {
-                if (payload.message && payload.message.text.toLowerCase() === 'yes') {
-                    log.info('Bot chatting: more help...');
-                    chat.say({
-                        text: fbConfig.whatHelp,
-                        buttons: [
-                            { type: 'postback', title: 'Responding to questions', payload: 'RESPONDING_TO_QUESTIONS' },
-                            { type: 'postback', title: 'Updating answers', payload: 'UPDATING_ANSWERS' },
-                            { type: 'postback', title: 'Asking questions', payload: 'ASKING_QUESTIONS' }
-                        ]
-                    });
-                } else {
-                    chat.say(fbConfig.noUpdate, {typing: true});
-                    convo.end();
-                }
-            }); 
-        } catch (err) {
-            log.info(err || 'Technical error');
-            convo.end();
-        }
-    };
-    chat.say([fbConfig.help, fbConfig.help2, fbConfig.help3, fbConfig.help4], {typing: true}).then(() => {
-        chat.conversation((convo) => {
-            askMoreHelp(convo);
-        });
-    });
-});
-
-bot.on('postback:RESPONDING_TO_QUESTIONS', (payload, chat) => {
-    log.info(`Bot chatting: ${fbConfig.moreHelp}`);
-    chat.say(fbConfig.moreHelp, {typing: true});
-});
-
-bot.on('postback:UPDATING_ANSWERS', (payload, chat) => {
-    log.info(`Bot chatting: ${fbConfig.moreHelp2}`);
-    chat.say(fbConfig.moreHelp2, {typing: true});
-});
-
-bot.on('postback:ASKING_QUESTIONS', (payload, chat) => {
-    log.info(`Bot chatting: ${fbConfig.moreHelp3}`);
-    chat.say(fbConfig.moreHelp3, {typing: true});
+    chat.say([fbConfig.help, fbConfig.help2, fbConfig.help3, fbConfig.help4], {typing: true});
 });
 
 exports.receiveMessage = (req, res) => {
