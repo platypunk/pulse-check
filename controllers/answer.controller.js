@@ -253,32 +253,32 @@ exports.findAnswer = (req, res) => {
                         });
                     }
                 });
-} else {
-    log.info('Getting answers by question...');
-    Answer.find({
-        questionId: req.query.questionId
-    })
-    .then(answers => {
-        if(!answers) {
-            res.status(404).send({
-                message: `Data not found with id ${req.params.questionId}`
-            });            
+            } else {
+                log.info('Getting answers by question...');
+                Answer.find({
+                    questionId: req.query.questionId
+                })
+                .then(answers => {
+                    if(!answers) {
+                        res.status(404).send({
+                            message: `Data not found with id ${req.params.questionId}`
+                        });            
+                    }
+                    res.send(answers);
+                }).catch(err => {
+                    if(err.kind === 'ObjectId') {
+                        res.status(404).send({
+                            message: 'Data not found'
+                        });
+                    }
+                    log.info(err.message || 'Technical error.');
+                    res.status(500).send({
+                        message: 'Technical error.'
+                    });
+                });
+            }
         }
-        res.send(answers);
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
-            res.status(404).send({
-                message: 'Data not found'
-            });
-        }
-        log.info(err.message || 'Technical error.');
-        res.status(500).send({
-            message: 'Technical error.'
-        });
-    });
-}
-}
-}
+    }
 };
 
 exports.findAnswerByUser = (questionId, userId, callback) => {

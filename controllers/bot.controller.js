@@ -123,12 +123,57 @@ bot.hear(['thanks', 'thank you'], (payload, chat) => {
     chat.say(fbConfig.welcome, {typing: true});
 });
 
-bot.hear(['help'], (payload, chat) => {
-    log.info('Bot chatting: Hello I am Pulsy, your digital sentiment stones.');
-    chat.say('Hello I am Pulsy, your digital sentiment stones.', {typing: true});
-    // chat.say('I will ask you pulse questions as they are scheduled.', {typing: true});
-    // chat.say('You can update your answers by clicking on an old question\'s option.', {typing: true});
-    // chat.say('If you want to ask a sentiment question, please access https://pulsecheck.tk', {typing: true})
+bot.hear(['help', 'info', 'test', 'how to'], (payload, chat) => {
+    log.info('Bot chatting: help...');
+    chat.say(fbConfig.help, {typing: true});
+    chat.say(fbConfig.help2, {typing: true});
+    chat.say(fbConfig.help3, {typing: true});
+    chat.say(fbConfig.help4, {typing: true})
+    const askMoreHelp = (convo) => {
+        try {
+            convo.ask(fbConfig.moreHelp, (payload, convo) => {
+                if (payload.message && payload.message.text.toLowerCase() === 'yes') {
+                    log.info('Bot chatting: more help...');
+                    chat.say({
+                        text: fbConfig.whatHelp,
+                        quickReplies: ['Responding to questions',
+                            'Updating answers', 
+                            'Asking questions', 
+                            'Contact us']
+                    });
+                } else {
+                    chat.say(fbConfig.noUpdate, {typing: true});
+                    convo.end();
+                }
+            }); 
+        } catch (err) {
+            log.info(err || 'Technical error');
+            convo.end();
+        }
+    };
+    chat.conversation((convo) => {
+        askMoreHelp(convo);
+    });
+});
+
+bot.hear(['Responding to questions'], (payload, chat) => {
+    log.info(`Bot chatting: ${fbConfig.moreHelp}`);
+    chat.say(fbConfig.moreHelp, {typing: true});
+});
+
+bot.hear(['Updating answers'], (payload, chat) => {
+    log.info(`Bot chatting: ${fbConfig.moreHelp2}`);
+    chat.say(fbConfig.moreHelp2, {typing: true});
+});
+
+bot.hear(['Asking questions'], (payload, chat) => {
+    log.info(`Bot chatting: ${fbConfig.moreHelp3}`);
+    chat.say(fbConfig.moreHelp3, {typing: true});
+});
+
+bot.hear(['Contact us'], (payload, chat) => {
+    log.info(`Bot chatting: ${fbConfig.moreHelp4}`);
+    chat.say(fbConfig.moreHelp4, {typing: true});
 });
 
 exports.receiveMessage = (req, res) => {
